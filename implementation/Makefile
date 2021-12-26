@@ -35,8 +35,10 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -pedantic
 DFLAGS := -O0 -g3
 
 # Unused Flags
+ifndef ERROR_FLAGS
 UNUSED_FLAGS := -Wno-unused -Wno-unused-parameter
 CXXFLAGS += $(UNUSED_FLAGS)
+endif #ERROR_FLAGS
 
 ifdef FSANITIZE
 	DFLAGS += -fsanitize=address
@@ -54,7 +56,8 @@ RM = /bin/rm -f
 
 # Rules
 .PHONY: all
-all: $(NAME)
+all:
+	$(MAKE) $(NAME) -j
 
 # Compilation
 $(NAME): $(OBJ)
@@ -76,10 +79,12 @@ re: fclean
 	$(MAKE) all
 
 # Debug
-.PHONY: debug
+.PHONY: debug fsanitize error
 debug:
 	$(MAKE) all DEBUG=1
 fsanitize:
 	$(MAKE) all DEBUG=1 FSANITIZE=1
+error: fclean
+	$(MAKE) all ERROR_FLAGS=1
 
 -include $(DEP)

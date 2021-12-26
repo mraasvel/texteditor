@@ -3,10 +3,26 @@
 #include "util/mrlog.hpp"
 #include "util/util.hpp"
 #include <unistd.h>
+#include <cstring>
 
 namespace TextEditor {
 
+static int confirmTcChanges(struct termios& settings) {
+	struct termios current;
+	memset(&current, 0, sizeof(struct termios));
+	if (tcgetattr(STDIN_FILENO, &current) == -1) {
+		syscallError("tcgetattr");
+		return ExitCode::ERROR;
+	}
+	if (memcmp(&current, &settings, sizeof(struct termios)) != 0) {
+		mrlog::error("tcsetattr: some terminal settings were not set");
+		return ExitCode::ERROR;
+	}
+	return ExitCode::OK;
+}
+
 int TerminalSettings::set() {
+	memset(&terminfo.orig, 0, sizeof(struct termios));
 	if (tcgetattr(STDIN_FILENO, &terminfo.orig) == -1) {
 		syscallError("tcgetattr");
 		return ExitCode::ERROR;
@@ -18,7 +34,7 @@ int TerminalSettings::set() {
 		return ExitCode::ERROR;
 	}
 	terminfo.set = true;
-	return ExitCode::OK;
+	return confirmTcChanges(settings);
 }
 
 void TerminalSettings::reset() {

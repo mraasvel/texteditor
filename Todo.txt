@@ -1,6 +1,12 @@
 >> Todo <<
 
-	- Read tcgetattr/setattr documentation + flag / parameter meaning
-		- TCSAFLUSH
-		- Potential errors and behaviors
-		- Things to take into account
+	- CI: locked main branch, enforced PRs
+	- Continue:
+		https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
+		https://man7.org/linux/man-pages/man3/tcflush.3.html
+		Determine which termios settings to enable
+	- Terminal settings: print out which ones were not set (generate code for getting the string based on the macro/value)
+
+>> Later <<
+
+	Compile the project using CMake instead of Make

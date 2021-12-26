@@ -9,10 +9,6 @@ namespace TextEditor {
 
 typedef wint_t buffer_t;
 
-static bool shouldExit(buffer_t c) {
-	return c == 'q' || std::wcin.eof();
-}
-
 int setTerminalMode() {
 	if (atexit(TerminalSettings::reset) != 0) {
 		syscallError("atexit");
