@@ -1,8 +1,8 @@
 #include "text_editor.hpp"
 #include "terminal_settings.hpp"
+#include "util/mrlog.hpp"
 #include "util/util.hpp"
 #include <unistd.h>
-#include <iostream> // remove
 
 namespace TextEditor {
 
@@ -25,7 +25,8 @@ void TerminalSettings::reset() {
 	if (!terminfo.set) {
 		return;
 	}
-	std::cout << "Resetting Terminal Settings" << std::endl;
+
+	mrlog::info("Resetting Terminal Settings");
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminfo.orig) == -1) {
 		syscallError("tcsetattr");
 	}

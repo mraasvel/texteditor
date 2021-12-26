@@ -1,7 +1,5 @@
 >> Todo <<
 
-	- Add OUTPUT class for logging and general output redirection
-	- util library support (github dependency)
 	- Read tcgetattr/setattr documentation + flag / parameter meaning
 		- TCSAFLUSH
 		- Potential errors and behaviors

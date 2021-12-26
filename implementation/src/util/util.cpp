@@ -1,11 +1,13 @@
 #include "util/util.hpp"
-#include <cstdio>
+#include "util/mrlog.hpp"
+#include <cstring>
 #include <string>
+#include <cerrno>
 
 namespace TextEditor {
 
 void syscallError(const std::string& s) {
-	perror(s.c_str());
+	mrlog::error("%s: %s", s.c_str(), strerror(errno));
 }
 
 }
