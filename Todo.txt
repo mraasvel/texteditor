@@ -1,12 +1,8 @@
 >> Todo <<
 
-	- CI: locked main branch, enforced PRs
-	- Continue:
-		https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
-		https://man7.org/linux/man-pages/man3/tcflush.3.html
-		Determine which termios settings to enable
-	- Terminal settings: print out which ones were not set (generate code for getting the string based on the macro/value)
+	https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 
 >> Later <<
 
-	Compile the project using CMake instead of Make
+	- Terminal settings: print out which ones were not set (generate code for getting the string based on the macro/value)
+	- Compile the project using CMake instead of Make

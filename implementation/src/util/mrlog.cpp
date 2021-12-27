@@ -42,12 +42,12 @@ namespace mrlog {
 	}
 
 	static void print(FILE* outfile, const char* fmt, va_list arg, Level level) {
-		fprintf(outfile, "%s", generateDate().c_str());
+		fprintf(outfile, "%s: ", generateDate().c_str());
 		if (level != Level::OFF) {
-			fprintf(outfile, ": [%s] ", getLevelString(level).c_str());
+			fprintf(outfile, "[%s] ", getLevelString(level).c_str());
 		}
 		vfprintf(outfile, fmt, arg);
-		fprintf(outfile, "\n");
+		fprintf(outfile, "\r\n");
 	}
 
 	static void log(const char* fmt, va_list arg, Level level = Level::OFF) {

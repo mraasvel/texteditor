@@ -6,8 +6,10 @@ namespace TextEditor {
 
 class TerminalSettings {
 public:
-	static int set();
+	static int setRawMode();
+	static int saveCurrent();
 	static void reset();
+
 private:
 	struct TermInfo {
 		TermInfo();
@@ -15,7 +17,9 @@ private:
 		bool set;
 	};
 	// Contains necessary to reset the terminal settings on exit
+	static bool isOriginalSet();
 	static struct TermInfo terminfo;
+	static struct termios getRawModeSettings();
 };
 
 }
