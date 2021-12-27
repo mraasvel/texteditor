@@ -11,15 +11,18 @@ public:
 	static void reset();
 
 private:
+	static bool isOriginalSet();
+	static struct termios getRawModeSettings();
+
+private:
+	// Contains necessary to reset the terminal settings on exit
 	struct TermInfo {
 		TermInfo();
 		struct termios orig;
 		bool set;
 	};
-	// Contains necessary to reset the terminal settings on exit
-	static bool isOriginalSet();
+
 	static struct TermInfo terminfo;
-	static struct termios getRawModeSettings();
 };
 
 }
