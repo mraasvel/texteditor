@@ -36,3 +36,4 @@
 .DS_Store
 *.DSYM/
 *.log
+*.swp
