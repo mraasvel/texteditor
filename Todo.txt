@@ -1,5 +1,28 @@
 >> Todo <<
 
+	1. Escape Sequences
+		- Learn what escape sequences are and how they're defined
+		- All possible ways to get them as input from the user: read in multiple bytes or just 1?
+		- Like we can dispatch on ESC to read more bytes, or not
+
+	3. Learn NCurses: set up a wrapper for whatever it's used for
+
+		- Read input in non-canonical mode from a central point
+		- Clear the screen and set up an 'editor' interface
+		- Simple class like Cursor with simple functions like readCurrentPosition()
+
+	2. Set up a basic input/output structure:
+
+		- Store lines, data structure for lines (vector of pair of char buffers?)
+		- Saving input and outputting data
+
+	4. Cursor movement, coordinates:
+		- Erase characters
+		- Over a single line
+		- To lines below and above
+		- Scrolling beyond the end of the terminal screen
+		- Screen resizing support
+
 	https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 
 >> Later <<

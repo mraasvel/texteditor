@@ -6,10 +6,13 @@
 #include <termios.h>
 #include <unistd.h>
 #include <cstring>
+#include <array>
+#include <ncurses.h>
+
+// Returns the value of a given control character
+#define CTRL_KEY(key) ((key) & 0x1F)
 
 namespace TextEditor {
-
-typedef wint_t buffer_t;
 
 static int setTerminalMode() {
 	if (atexit(TerminalSettings::reset) != 0) {
@@ -32,15 +35,27 @@ static void printBytes(const char* buffer, size_t n) {
 	std::cout << "\r\n";
 }
 
-static void readStdin() {
-	mrlog::info("Start Reading");
-	char buffer[6] = {0};
+static std::array<char, 6> readByte() {
 	ssize_t n;
-	do {
-		memset(&buffer, 0, sizeof(buffer));
-		n = read(STDIN_FILENO, buffer, sizeof(buffer));
-		printBytes(buffer, 6);
-	} while (buffer[0] != 'q');
+	std::array<char, 6> buffer;
+	memset(buffer.data(), 0, buffer.size());
+	if (read(STDIN_FILENO, buffer.data(), 6) == -1 && errno != EAGAIN) {
+		syscallError("readByte: read");
+		throw std::runtime_error("read failed");
+	}
+	return buffer;
+}
+
+static int processByte() {
+	std::array<char, 6> buffer = readByte();
+	switch(buffer.front()) {
+		case CTRL_KEY('q'):
+			return ExitCode::ERROR;
+		default:
+			printBytes(buffer.data(), buffer.size());
+			break;
+	}
+	return ExitCode::SUCCESS;
 }
 
 static int run() {
@@ -51,8 +66,8 @@ static int run() {
 	if (setTerminalMode() == ExitCode::ERROR) {
 		return ExitCode::ERROR;
 	}
-	readStdin();
-	return ExitCode::OK;
+	while (processByte() == ExitCode::SUCCESS) {}
+	return ExitCode::SUCCESS;
 }
 
 }

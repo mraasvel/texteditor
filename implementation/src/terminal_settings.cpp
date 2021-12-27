@@ -35,7 +35,7 @@ static int validateTerminalChanges(struct termios& settings) {
 		return ExitCode::ERROR;
 	}
 	mrlog::debug("termios settings modified");
-	return ExitCode::OK;
+	return ExitCode::SUCCESS;
 }
 
 int TerminalSettings::setRawMode() {
@@ -64,7 +64,7 @@ int TerminalSettings::saveCurrent() {
 	}
 	terminfo.set = true;
 	mrlog::debug("termios state saved");
-	return ExitCode::OK;
+	return ExitCode::SUCCESS;
 }
 
 void TerminalSettings::reset() {
