@@ -3,12 +3,13 @@
 #include <cstdarg>
 #include <cstdio>
 #include <ctime>
+#include <fstream>
 
 namespace mrlog {
 
 	namespace __detail__ {
 
-	static const std::string LOGFILE = "./mrlog.log";
+	static constexpr char LOGFILE[] = "./mrlog.log";
 
 	static std::string generateDate() {
 		char buffer[100];
@@ -42,7 +43,7 @@ namespace mrlog {
 	}
 
 	static void print(FILE* outfile, const char* fmt, va_list arg, Level level) {
-		fprintf(outfile, "%s: ", generateDate().c_str());
+		// fprintf(outfile, "[%s]: ", generateDate().c_str());
 		if (level != Level::OFF) {
 			fprintf(outfile, "[%s] ", getLevelString(level).c_str());
 		}
@@ -54,7 +55,7 @@ namespace mrlog {
 		// print(stdout, fmt, arg, level);
 		// va_end(arg);
 		// return;
-		FILE* logfile = fopen(LOGFILE.c_str(), "a");
+		FILE* logfile = fopen(LOGFILE, "a");
 		if (logfile == nullptr) {
 			perror("fopen");
 			return;
@@ -102,6 +103,14 @@ void debug(const char* fmt, ...) {
 	va_list ap;
 	va_start(ap, fmt);
 	__detail__::log(fmt, ap, Level::DEBUG);
+}
+
+void clear() {
+	std::ofstream ofs(__detail__::LOGFILE, std::ios_base::out | std::ios_base::trunc);
+	if (!ofs.is_open()) {
+		throw std::ios_base::failure("failed to open logfile");
+	}
+	ofs.close();
 }
 
 }

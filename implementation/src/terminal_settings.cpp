@@ -27,8 +27,7 @@ static int validateTerminalChanges(struct termios& settings) {
 	struct termios current;
 	memset(&current, 0, sizeof(struct termios));
 	if (tcgetattr(STDIN_FILENO, &current) == -1) {
-		syscallError("tcgetattr");
-		return ExitCode::ERROR;
+		return syscallError("tcgetattr");
 	}
 	if (memcmp(&current, &settings, sizeof(struct termios)) != 0) {
 		mrlog::error("tcsetattr: some terminal settings were not set");
@@ -45,8 +44,7 @@ int TerminalSettings::setRawMode() {
 	}
 	struct termios settings = getRawModeSettings();
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &settings)) {
-		syscallError("tcsetattr");
-		return ExitCode::ERROR;
+		return syscallError("tcsetattr");
 	}
 	terminfo.set = true;
 	return validateTerminalChanges(settings);
@@ -59,8 +57,7 @@ bool TerminalSettings::isOriginalSet() {
 int TerminalSettings::saveCurrent() {
 	memset(&terminfo.orig, 0, sizeof(struct termios));
 	if (tcgetattr(STDIN_FILENO, &terminfo.orig) == -1) {
-		syscallError("tcgetattr");
-		return ExitCode::ERROR;
+		return syscallError("tcgetattr");
 	}
 	terminfo.set = true;
 	mrlog::debug("termios state saved");

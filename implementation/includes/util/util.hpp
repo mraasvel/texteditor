@@ -4,6 +4,6 @@
 
 namespace TextEditor {
 
-void syscallError(const std::string& s);
+int syscallError(const std::string& s);
 
 }

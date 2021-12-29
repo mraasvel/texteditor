@@ -2,6 +2,7 @@
 #include "terminal_settings.hpp"
 #include "util/util.hpp"
 #include "util/mrlog.hpp"
+#include "termapi.hpp"
 #include <iostream>
 #include <termios.h>
 #include <unistd.h>
@@ -16,8 +17,7 @@ namespace TextEditor {
 
 static int setTerminalMode() {
 	if (atexit(TerminalSettings::reset) != 0) {
-		syscallError("atexit");
-		return ExitCode::ERROR;
+		return syscallError("atexit");
 	}
 	if (TerminalSettings::saveCurrent() == ExitCode::ERROR) {
 		return ExitCode::ERROR;
@@ -26,12 +26,25 @@ static int setTerminalMode() {
 }
 
 static int run() {
+	mrlog::clear();
 	if (!isatty(STDIN_FILENO)) {
-		syscallError("isatty");
+		return syscallError("isatty");
+	}
+	TermApi api;
+	if (api.init() == ExitCode::ERROR) {
 		return ExitCode::ERROR;
 	}
-	if (setTerminalMode() == ExitCode::ERROR) {
-		return ExitCode::ERROR;
+
+	while (true) {
+		int n = getch();
+		if (n == 'q') {
+			break;
+		}
+		mrlog::log("%d", n);
+		attron(A_BOLD);
+		printw("%c", n);
+		attroff(A_BOLD);
+		refresh();
 	}
 	return ExitCode::SUCCESS;
 }
