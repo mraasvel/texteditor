@@ -1,17 +1,10 @@
 >> Todo <<
 
-	1. Escape Sequences
-		- Learn what escape sequences are and how they're defined
-		- All possible ways to get them as input from the user: read in multiple bytes or just 1?
-		- Like we can dispatch on ESC to read more bytes, or not
+	2. Learn NCurses: set up a wrapper for whatever it's used for
 
-	3. Learn NCurses: set up a wrapper for whatever it's used for
+		https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/
 
-		- Read input in non-canonical mode from a central point
-		- Clear the screen and set up an 'editor' interface
-		- Simple class like Cursor with simple functions like readCurrentPosition()
-
-	2. Set up a basic input/output structure:
+	3. Set up a basic input/output structure:
 
 		- Store lines, data structure for lines (vector of pair of char buffers?)
 		- Saving input and outputting data

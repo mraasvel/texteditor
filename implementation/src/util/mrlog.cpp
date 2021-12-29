@@ -51,9 +51,9 @@ namespace mrlog {
 	}
 
 	static void log(const char* fmt, va_list arg, Level level = Level::OFF) {
-		print(stdout, fmt, arg, level);
-		va_end(arg);
-		return;
+		// print(stdout, fmt, arg, level);
+		// va_end(arg);
+		// return;
 		FILE* logfile = fopen(LOGFILE.c_str(), "a");
 		if (logfile == nullptr) {
 			perror("fopen");
