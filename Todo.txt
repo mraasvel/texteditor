@@ -1,20 +1,45 @@
 >> Todo <<
 
-	2. Learn NCurses: set up a wrapper for whatever it's used for
+	https://iq.opengenus.org/data-structures-used-in-text-editor/
 
-		https://tldp.org/HOWTO/NCURSES-Programming-HOWTO/
+	- Basic infrastructure:
 
-	3. Set up a basic input/output structure:
+		- Read input
+		- Dispatch based on input
+		- Define own enumeration for relevant keys (map to ncurses in the TermApi) (start at 256)
+		- Data structure: vector<line>? (inefficient in terms of inserting lines, maybe a list)
+
+
+	- Set up a basic input/output structure:
 
 		- Store lines, data structure for lines (vector of pair of char buffers?)
 		- Saving input and outputting data
 
-	4. Cursor movement, coordinates:
+	- Cursor movement, coordinates:
 		- Erase characters
 		- Over a single line
 		- To lines below and above
 		- Scrolling beyond the end of the terminal screen
 		- Screen resizing support
+
+	- Ncurses Uses:
+
+		Used for:
+
+			- Reading input
+			- Writing output
+			- Determining special characters: [NEWLINE, KEYS, F1s, ESC, SEQUENCES]
+			- Changing scenes (windows)
+			- Moving Cursor, cursor interaction
+			- Mouse interaction (?)
+
+	- Features:
+
+		- Scrolling (with arrow keys initially)
+		- Window resizing
+		- Opening, saving files
+		- Shortcuts: look at VSCode for inspiration
+		- Syntax Highlighting
 
 	https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 
