@@ -30,7 +30,7 @@ DEP := $(patsubst $(SDIR)/%.cpp,$(DDIR)/$(SUBDIR)%.d,$(SRC))
 # Compilation
 CXX = clang++
 IFLAGS = -I$(IDIR)
-LFLAGS = -lncurses
+LFLAGS = -lncurses -lncursesw
 CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -pedantic
 DFLAGS := -O0 -g3
 

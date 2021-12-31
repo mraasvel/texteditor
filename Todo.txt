@@ -4,11 +4,9 @@
 
 	- Basic infrastructure:
 
-		- Read input
-		- Dispatch based on input
 		- Define own enumeration for relevant keys (map to ncurses in the TermApi) (start at 256)
+			This should be initialzed during compile time
 		- Data structure: vector<line>? (inefficient in terms of inserting lines, maybe a list)
-
 
 	- Set up a basic input/output structure:
 
@@ -41,6 +39,7 @@
 		- Shortcuts: look at VSCode for inspiration
 		- Syntax Highlighting
 
+	https://stackoverflow.com/questions/9750588/how-to-get-ctrl-shift-or-alt-with-getch-ncurses
 	https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 
 >> Later <<

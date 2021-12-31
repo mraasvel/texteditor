@@ -4,6 +4,8 @@
 
 namespace TextEditor {
 
+int setTerminalMode();
+
 class TerminalSettings {
 public:
 	static int setRawMode();

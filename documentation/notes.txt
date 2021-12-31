@@ -1,0 +1,14 @@
+1. Read input
+2. Dispatch based on output:
+	- Normal characters
+		1. Print it
+		2. Add it to the data structure
+		3. Update cursor (it can overflow to the next line, causing the terminal to overwrite so we should refresh)
+	- KEY_BACKSPACE
+	- Newline (LF: 10)
+		- Insert a new line below (containing everything after the cursor position)
+	- ARROW_KEYS
+		- Move the cursor in the appropriate direction
+	- Shift + arrow keys for selection
+	- F_KEY
+	- Other control characters (< 32)

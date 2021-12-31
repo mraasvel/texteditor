@@ -8,6 +8,19 @@
 namespace TextEditor {
 
 /*
+How the TerminalSettings should be called
+*/
+int setTerminalMode() {
+	if (atexit(TerminalSettings::reset) != 0) {
+		return syscallError("atexit");
+	}
+	if (TerminalSettings::saveCurrent() == ExitCode::ERROR) {
+		return ExitCode::ERROR;
+	}
+	return TerminalSettings::setRawMode();
+}
+
+/*
 See documentation: termios.txt for details
 */
 struct termios TerminalSettings::getRawModeSettings() {

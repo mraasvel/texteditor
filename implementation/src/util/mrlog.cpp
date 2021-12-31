@@ -11,7 +11,8 @@ namespace mrlog {
 
 	static constexpr char LOGFILE[] = "./mrlog.log";
 
-	static std::string generateDate() {
+	// TODO: add static tag or remove if unused
+	std::string generateDate() {
 		char buffer[100];
 		time_t rawtime;
 		time(&rawtime);
@@ -52,9 +53,6 @@ namespace mrlog {
 	}
 
 	static void log(const char* fmt, va_list arg, Level level = Level::OFF) {
-		// print(stdout, fmt, arg, level);
-		// va_end(arg);
-		// return;
 		FILE* logfile = fopen(LOGFILE, "a");
 		if (logfile == nullptr) {
 			perror("fopen");
