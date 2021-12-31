@@ -2,21 +2,19 @@
 
 	https://iq.opengenus.org/data-structures-used-in-text-editor/
 
-	- Basic infrastructure:
+	- Handle single line
 
-		- Define own enumeration for relevant keys (map to ncurses in the TermApi) (start at 256)
-			This should be initialzed during compile time
-		- Data structure: vector<line>? (inefficient in terms of inserting lines, maybe a list)
+		- Move left and right
+		- Input in the middle of line
+		- When printing goes on to the next line
 
-	- Set up a basic input/output structure:
+	- Handle multiple lines
 
-		- Store lines, data structure for lines (vector of pair of char buffers?)
-		- Saving input and outputting data
+		- Linked list of lines
+		- Moving between lines
+		- When printing overlaps lines
 
 	- Cursor movement, coordinates:
-		- Erase characters
-		- Over a single line
-		- To lines below and above
 		- Scrolling beyond the end of the terminal screen
 		- Screen resizing support
 

@@ -3,6 +3,7 @@
 #include "util/exit_codes.hpp"
 #include "util/mrlog.hpp"
 #include <ncurses.h>
+#include <array>
 
 namespace TextEditor {
 
@@ -27,14 +28,15 @@ int TermApi::init() {
 }
 
 int TermApi::setRawMode() const {
-	if (raw() == ERR) {
-		return syscallError("raw");
-	}
-	if (nonl() == ERR) {
-		return syscallError("nonl");
-	}
-	if (noecho() == ERR) {
-		return syscallError("noecho");
+	const std::array<int (*)(), 3> table = {
+		&raw,
+		&nonl,
+		&noecho
+	};
+	for (const auto& init : table) {
+		if (init() == ERR) {
+			return syscallError("setRawMode");
+		}
 	}
 	if (keypad(screen, true) == ERR) {
 		return syscallError("keypad");
@@ -58,6 +60,21 @@ void TermApi::put(const std::string& s) const {
 	if (refresh() == ERR) {
 		mrlog::error("putchar: refresh error");
 	}
+}
+
+void TermApi::erase() const {
+	Point previous = getPreviousPosition();
+	mrlog::info("Position: (%d, %d)", previous.x, previous.y);
+	mvdelch(previous.y, previous.x);
+}
+
+TermApi::Point TermApi::getPreviousPosition() const {
+	int y, x;
+	getyx(stdscr, y, x);
+	if (x == 0) {
+		return Point(getmaxx(stdscr) - 1, y - 1);
+	}
+	return Point(x - 1, y);
 }
 
 }

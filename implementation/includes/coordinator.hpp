@@ -1,6 +1,7 @@
 #pragma once
 
 #include "termapi.hpp"
+#include "line.hpp"
 
 namespace TextEditor {
 
@@ -11,6 +12,8 @@ private:
 		ERROR,
 		EXIT
 	};
+
+	typedef TermApi::Keys Keys;
 
 public:
 	Coordinator();
@@ -33,10 +36,12 @@ private:
 	int dispatchArrowRight();
 	int dispatchEscape();
 	int dispatchCtrlQ();
+	int dispatchWindowChange();
 
 private:
 	State state;
 	TermApi termapi;
+	Line line;
 };
 
 }

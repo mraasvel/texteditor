@@ -1,0 +1,12 @@
+-- Initial Idea --
+
+	Line: Split Buffer
+	Lines: linked list
+
+Sources:
+
+	https://www.briansteffens.com/2017/06/19/split-buffers.html
+
+	https://iq.opengenus.org/data-structures-used-in-text-editor/
+	https://ecc-comp.blogspot.com/2015/05/a-brief-glance-at-how-5-text-editors.html
+	http://texteditors.org/cgi-bin/wiki.pl?DesigningTextEditors

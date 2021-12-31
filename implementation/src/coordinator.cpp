@@ -1,7 +1,6 @@
 #include "coordinator.hpp"
 #include "text_editor.hpp"
 #include "util/mrlog.hpp"
-#include "util/keymaps.hpp"
 #include <ctype.h>
 #include <ncurses.h>
 #include <unordered_map>
@@ -20,7 +19,7 @@ int Coordinator::run() {
 	termapi.put("Press Ctrl + Q to exit\n");
 	while (state == State::ACTIVE) {
 		int ch = termapi.getchar();
-		mrlog::info("%s - %d", key_name(ch), ch);
+		// mrlog::info("%s - %d", key_name(ch), ch);
 		if (shouldPrint(ch)) {
 			updatechar(ch);
 		} else if (dispatch(ch) == ExitCode::ERROR) {
@@ -46,6 +45,7 @@ static bool shouldPrint(int ch) {
 Edge case: overflows to next line (current Y is already at the end)
 */
 void Coordinator::updatechar(int ch) {
+	line.insert(ch);
 	termapi.put(ch);
 }
 
@@ -63,15 +63,16 @@ This function is part of the coordinator, it can update the state (so we know wh
 */
 int Coordinator::dispatch(int ch) {
 	static const std::unordered_map<int, DispatchFunction> functions = {
-		{KEY_BACKSPACE, &Coordinator::dispatchBackspace},
-		{KEY_DC, &Coordinator::dispatchDelete},
-		{KEY_DOWN, &Coordinator::dispatchArrowDown},
-		{KEY_UP, &Coordinator::dispatchArrowUp},
-		{KEY_LEFT, &Coordinator::dispatchArrowLeft},
-		{KEY_RIGHT, &Coordinator::dispatchArrowRight},
-		{Keys::ESCAPE, &Coordinator::dispatchEscape},
-		{CTRL_KEY('q'), &Coordinator::dispatchCtrlQ},
-		{Keys::NEWLINE, &Coordinator::dispatchNewline},
+		{Keys::K_NEWLINE, &Coordinator::dispatchNewline},
+		{Keys::K_BACKSPACE, &Coordinator::dispatchBackspace},
+		{Keys::K_DELETEC, &Coordinator::dispatchDelete},
+		{Keys::K_ARROW_DOWN, &Coordinator::dispatchArrowDown},
+		{Keys::K_ARROW_UP, &Coordinator::dispatchArrowUp},
+		{Keys::K_ARROW_LEFT, &Coordinator::dispatchArrowLeft},
+		{Keys::K_ARROW_RIGHT, &Coordinator::dispatchArrowRight},
+		{Keys::K_ESCAPE, &Coordinator::dispatchEscape},
+		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
+		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
 	};
 
 	if (functions.count(ch) > 0) {
@@ -81,48 +82,48 @@ int Coordinator::dispatch(int ch) {
 }
 
 int Coordinator::dispatchNewline() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchBackspace() {
-	mrlog::info("Called: %s", __FUNCTION__);
+	line.erase();
+	termapi.erase();
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchDelete() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowDown() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowUp() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowLeft() {
-	mrlog::info("Called: %s", __FUNCTION__);
+	line.moveleft();
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowRight() {
-	mrlog::info("Called: %s", __FUNCTION__);
+	line.moveright();
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchEscape() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchCtrlQ() {
-	mrlog::info("Called: %s", __FUNCTION__);
 	state = State::EXIT;
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchWindowChange() {
+	mrlog::info("called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
