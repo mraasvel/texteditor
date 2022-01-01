@@ -32,6 +32,22 @@ std::size_t SplitBuffer::size() const {
 	return pre.size() + post.size();
 }
 
+const std::string& SplitBuffer::getPre() const {
+	return pre;
+}
+
+const std::string& SplitBuffer::getPost() const {
+	return post;
+}
+
+bool SplitBuffer::preEmpty() const {
+	return pre.empty();
+}
+
+bool SplitBuffer::postEmpty() const {
+	return post.empty();
+}
+
 /*
 Debug
 */

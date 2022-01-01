@@ -15,6 +15,8 @@ public:
 	std::size_t size() const;
 	const std::string& getPre() const;
 	const std::string& getPost() const;
+	bool preEmpty() const;
+	bool postEmpty() const;
 
 /* DEBUG, REMOVE */
 	void log() const;

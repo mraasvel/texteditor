@@ -25,6 +25,7 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
+		// line.log();
 	}
 	return ExitCode::SUCCESS;
 }
@@ -47,6 +48,9 @@ Edge case: overflows to next line (current Y is already at the end)
 void Coordinator::updatechar(int ch) {
 	line.insert(ch);
 	termapi.put(ch);
+	if (!line.postEmpty()) {
+		termapi.insert(line.getPost());
+	}
 }
 
 /*
@@ -86,8 +90,10 @@ int Coordinator::dispatchNewline() {
 }
 
 int Coordinator::dispatchBackspace() {
-	line.erase();
-	termapi.erase();
+	if (!line.preEmpty()) {
+		line.erase();
+		termapi.erase();
+	}
 	return ExitCode::SUCCESS;
 }
 
@@ -104,12 +110,18 @@ int Coordinator::dispatchArrowUp() {
 }
 
 int Coordinator::dispatchArrowLeft() {
-	line.moveleft();
+	if (!line.preEmpty()) {
+		line.moveleft();
+		termapi.moveleft();
+	}
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowRight() {
-	line.moveright();
+	if (!line.postEmpty()) {
+		line.moveright();
+		termapi.moveright();
+	}
 	return ExitCode::SUCCESS;
 }
 

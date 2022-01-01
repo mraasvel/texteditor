@@ -1,12 +1,11 @@
 >> Todo <<
 
-	https://iq.opengenus.org/data-structures-used-in-text-editor/
-
 	- Handle single line
 
-		- Move left and right
-		- Input in the middle of line
-		- When printing goes on to the next line
+		- Line wraps onto the next line:
+			- Erasing back to the previous line
+			- Moving back and erasing characters in the middle
+			- Scrolling back up when printing beyond the terminal screen (single line covers everything)
 
 	- Handle multiple lines
 
@@ -38,7 +37,6 @@
 		- Syntax Highlighting
 
 	https://stackoverflow.com/questions/9750588/how-to-get-ctrl-shift-or-alt-with-getch-ncurses
-	https://viewsourcecode.org/snaptoken/kilo/02.enteringRawMode.html
 
 >> Later <<
 

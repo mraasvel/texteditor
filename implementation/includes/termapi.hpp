@@ -37,11 +37,18 @@ public:
 	int getchar() const;
 	void put(int ch) const;
 	void put(const std::string& s) const;
+	void insert(const std::string& s) const;
 	void erase() const;
+
+	void moveleft(int n = 1) const;
+	void moveright(int n = 1) const;
 
 private:
 	int setRawMode() const;
+	void setPosition(const Point& p) const;
+	Point getPosition() const;
 	Point getPreviousPosition() const;
+	Point getNextPosition() const;
 
 private:
 	WINDOW* screen;

@@ -50,22 +50,45 @@ int TermApi::getchar() const {
 
 void TermApi::put(int ch) const {
 	addch(ch);
-	if (refresh() == ERR) {
-		mrlog::error("putchar: refresh error");
-	}
+	refresh();
 }
 
 void TermApi::put(const std::string& s) const {
 	addstr(s.c_str());
-	if (refresh() == ERR) {
-		mrlog::error("putchar: refresh error");
-	}
+	refresh();
+}
+
+void TermApi::insert(const std::string& s) const {
+	Point original = getPosition();
+	put(s);
+	setPosition(original);
 }
 
 void TermApi::erase() const {
-	Point previous = getPreviousPosition();
-	mrlog::info("Position: (%d, %d)", previous.x, previous.y);
-	mvdelch(previous.y, previous.x);
+	setPosition(getPreviousPosition());
+	delch();
+}
+
+void TermApi::moveleft(int n) const {
+	while (n-- > 0) {
+		setPosition(getPreviousPosition());
+	}
+}
+
+void TermApi::moveright(int n) const {
+	while (n-- > 0) {
+		setPosition(getNextPosition());
+	}
+}
+
+void TermApi::setPosition(const Point& p) const {
+	move(p.y, p.x);
+}
+
+TermApi::Point TermApi::getPosition() const {
+	int y, x;
+	getyx(stdscr, y, x);
+	return Point(x, y);
 }
 
 TermApi::Point TermApi::getPreviousPosition() const {
@@ -75,6 +98,15 @@ TermApi::Point TermApi::getPreviousPosition() const {
 		return Point(getmaxx(stdscr) - 1, y - 1);
 	}
 	return Point(x - 1, y);
+}
+
+TermApi::Point TermApi::getNextPosition() const {
+	int y, x;
+	getyx(stdscr, y, x);
+	if (x == getmaxx(stdscr) - 1) {
+		return Point(0, y + 1);
+	}
+	return Point(x + 1, y);
 }
 
 }
