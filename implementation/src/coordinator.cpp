@@ -16,7 +16,6 @@ int Coordinator::run() {
 	if (init() == ExitCode::ERROR) {
 		return ExitCode::ERROR;
 	}
-	termapi.put("Press Ctrl + Q to exit\n");
 	while (state == State::ACTIVE) {
 		int ch = termapi.getchar();
 		// mrlog::info("%s - %d", key_name(ch), ch);
@@ -92,7 +91,7 @@ int Coordinator::dispatchNewline() {
 int Coordinator::dispatchBackspace() {
 	if (!line.preEmpty()) {
 		line.erase();
-		termapi.erase();
+		termapi.slideleft(line.getPost());
 	}
 	return ExitCode::SUCCESS;
 }
@@ -102,10 +101,12 @@ int Coordinator::dispatchDelete() {
 }
 
 int Coordinator::dispatchArrowDown() {
+	termapi.scrollDown();
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowUp() {
+	termapi.scrollUp();
 	return ExitCode::SUCCESS;
 }
 

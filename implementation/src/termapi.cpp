@@ -38,8 +38,10 @@ int TermApi::setRawMode() const {
 			return syscallError("setRawMode");
 		}
 	}
-	if (keypad(screen, true) == ERR) {
+	if (keypad(stdscr, true) == ERR) {
 		return syscallError("keypad");
+	} else if (scrollok(stdscr, true) == ERR) {
+		return syscallError("scrollok");
 	}
 	return ExitCode::SUCCESS;
 }
@@ -67,6 +69,21 @@ void TermApi::insert(const std::string& s) const {
 void TermApi::erase() const {
 	setPosition(getPreviousPosition());
 	delch();
+}
+
+void TermApi::delchar() const {
+	delch();
+}
+
+/*
+Put string at previous position, erase first character after
+*/
+void TermApi::slideleft(const std::string& s) const {
+	Point position = getPreviousPosition();
+	setPosition(position);
+	put(s);
+	delchar();
+	setPosition(position);
 }
 
 void TermApi::moveleft(int n) const {
@@ -107,6 +124,24 @@ TermApi::Point TermApi::getNextPosition() const {
 		return Point(0, y + 1);
 	}
 	return Point(x + 1, y);
+}
+
+void TermApi::scrollDown() const {
+	scrl(1);
+}
+
+void TermApi::scrollUp() const {
+	scrl(-1);
+}
+
+// Returns number of characters left on the screen
+std::size_t TermApi::charactersLeftLine() const {
+	return getmaxx(stdscr) - getPosition().x - 1;
+}
+
+std::size_t TermApi::charactersLeftScreen() const {
+	return charactersLeftLine() +
+		(getmaxy(stdscr) - getPosition().y - 1) * getmaxx(stdscr);
 }
 
 }

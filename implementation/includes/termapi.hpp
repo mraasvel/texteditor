@@ -39,9 +39,14 @@ public:
 	void put(const std::string& s) const;
 	void insert(const std::string& s) const;
 	void erase() const;
+	void delchar() const;
+	void slideleft(const std::string& s) const;
 
 	void moveleft(int n = 1) const;
 	void moveright(int n = 1) const;
+
+	void scrollDown() const;
+	void scrollUp() const;
 
 private:
 	int setRawMode() const;
@@ -49,7 +54,8 @@ private:
 	Point getPosition() const;
 	Point getPreviousPosition() const;
 	Point getNextPosition() const;
-
+	std::size_t charactersLeftLine() const;
+	std::size_t charactersLeftScreen() const;
 private:
 	WINDOW* screen;
 };
