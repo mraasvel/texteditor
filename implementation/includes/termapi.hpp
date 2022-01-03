@@ -2,6 +2,7 @@
 
 // TODO: determine if this can be removed
 #include "util/point.hpp"
+#include "line.hpp"
 #include <ncurses.h>
 #include <string>
 
@@ -44,9 +45,14 @@ public:
 
 	void moveleft(int n = 1) const;
 	void moveright(int n = 1) const;
+	void moveup(int n = 1) const;
+	void movedown(int n = 1) const;
+
+	void render(const std::string& pre, const std::string& post) const;
 
 	void scrollDown() const;
 	void scrollUp() const;
+	int getLineSize() const;
 
 private:
 	int setRawMode() const;
@@ -56,6 +62,11 @@ private:
 	Point getNextPosition() const;
 	std::size_t charactersLeftLine() const;
 	std::size_t charactersLeftScreen() const;
+	std::size_t charactersBeforeCursor() const;
+	std::size_t charactersAfterCursor() const;
+	void putPre(const std::string& pre) const;
+	void putPost(const std::string& pre) const;
+	void clearWindow() const;
 private:
 	WINDOW* screen;
 };

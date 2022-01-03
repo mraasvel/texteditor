@@ -24,6 +24,7 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
+		termapi.render(line.getPre(), line.getPost());
 		// line.log();
 	}
 	return ExitCode::SUCCESS;
@@ -46,10 +47,7 @@ Edge case: overflows to next line (current Y is already at the end)
 */
 void Coordinator::updatechar(int ch) {
 	line.insert(ch);
-	termapi.put(ch);
-	if (!line.postEmpty()) {
-		termapi.insert(line.getPost());
-	}
+	termapi.moveright();
 }
 
 /*
@@ -91,7 +89,7 @@ int Coordinator::dispatchNewline() {
 int Coordinator::dispatchBackspace() {
 	if (!line.preEmpty()) {
 		line.erase();
-		termapi.slideleft(line.getPost());
+		termapi.moveleft();
 	}
 	return ExitCode::SUCCESS;
 }
@@ -101,12 +99,14 @@ int Coordinator::dispatchDelete() {
 }
 
 int Coordinator::dispatchArrowDown() {
-	termapi.scrollDown();
+	int maxx = termapi.getLineSize();
+	termapi.moveright(line.moveright(maxx));
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowUp() {
-	termapi.scrollUp();
+	int maxx = termapi.getLineSize();
+	termapi.moveleft(line.moveleft(maxx));
 	return ExitCode::SUCCESS;
 }
 
@@ -136,7 +136,6 @@ int Coordinator::dispatchCtrlQ() {
 }
 
 int Coordinator::dispatchWindowChange() {
-	mrlog::info("called: %s", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 

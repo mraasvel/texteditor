@@ -23,6 +23,8 @@ static int run() {
 
 }
 
+#ifndef CATCH_CONFIG_MAIN
 int main() {
 	return TextEditor::run();
 }
+#endif /* CATCH_CONFIG_MAIN */

@@ -16,16 +16,23 @@ void SplitBuffer::erase() {
 	pre.pop_back();
 }
 
-void SplitBuffer::moveleft(std::size_t n) {
-	std::size_t index = pre.size() - n;
-	post.append(pre, index, n);
-	pre.erase(index);
+/*
+Returns amount of bytes the line was able to move left
+*/
+std::size_t SplitBuffer::moveleft(std::size_t n) {
+	return moveSplit(post, pre, n);
 }
 
-void SplitBuffer::moveright(std::size_t n) {
-	std::size_t index = post.size() - n;
-	pre.append(post, index, n);
-	post.erase(index);
+std::size_t SplitBuffer::moveright(std::size_t n) {
+	return moveSplit(pre, post, n);
+}
+
+std::size_t SplitBuffer::moveSplit(std::string& dest, std::string& src, std::size_t n) {
+	n = std::min(src.size(), n);
+	// append in reverse order
+	dest.append(src.crbegin(), src.crbegin() + n);
+	src.erase(src.size() - n);
+	return n;
 }
 
 std::size_t SplitBuffer::size() const {

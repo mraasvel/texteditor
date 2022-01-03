@@ -2,6 +2,7 @@
 #include "util/util.hpp"
 #include "util/exit_codes.hpp"
 #include "util/mrlog.hpp"
+#include "line.hpp"
 #include <ncurses.h>
 #include <array>
 
@@ -46,18 +47,50 @@ int TermApi::setRawMode() const {
 	return ExitCode::SUCCESS;
 }
 
+void TermApi::render(const std::string& pre, const std::string& post) const {
+	clearWindow();
+	putPre(pre);
+	putPost(post);
+	refresh();
+}
+
+void TermApi::putPre(const std::string& pre) const {
+	Point orig = getPosition();
+	std::size_t bytes = charactersBeforeCursor();
+	setPosition(Point(0, 0));
+	if (bytes < pre.size()) {
+		put(pre.substr(pre.size() - bytes));
+	} else {
+		put(pre);
+	}
+	setPosition(orig);
+}
+
+void TermApi::putPost(const std::string& post) const {
+	Point orig = getPosition();
+	std::size_t bytes = charactersAfterCursor() + 1;
+	auto rit = post.crbegin();
+	while (bytes-- > 0 && rit != post.crend()) {
+		if (bytes == 0) {
+			insch(*rit);
+		} else {
+			put(*rit);
+		}
+		rit++;
+	}
+	setPosition(orig);
+}
+
 int TermApi::getchar() const {
 	return getch();
 }
 
 void TermApi::put(int ch) const {
 	addch(ch);
-	refresh();
 }
 
 void TermApi::put(const std::string& s) const {
 	addstr(s.c_str());
-	refresh();
 }
 
 void TermApi::insert(const std::string& s) const {
@@ -67,7 +100,7 @@ void TermApi::insert(const std::string& s) const {
 }
 
 void TermApi::erase() const {
-	setPosition(getPreviousPosition());
+	moveleft();
 	delch();
 }
 
@@ -79,22 +112,52 @@ void TermApi::delchar() const {
 Put string at previous position, erase first character after
 */
 void TermApi::slideleft(const std::string& s) const {
-	Point position = getPreviousPosition();
-	setPosition(position);
+	moveleft();
+	Point pos = getPosition();
 	put(s);
 	delchar();
-	setPosition(position);
+	setPosition(pos);
 }
 
 void TermApi::moveleft(int n) const {
 	while (n-- > 0) {
-		setPosition(getPreviousPosition());
+		Point pos = getPreviousPosition();
+		if (pos.y == -1) {
+			scrollUp();
+			setPosition(Point(pos.x, 0));
+		} else {
+			setPosition(getPreviousPosition());
+		}
 	}
 }
 
 void TermApi::moveright(int n) const {
 	while (n-- > 0) {
-		setPosition(getNextPosition());
+		Point pos = getNextPosition();
+		if (pos.y == getmaxy(stdscr)) {
+			scrollDown();
+			setPosition(Point(0, pos.y - 1));
+		} else {
+			setPosition(getNextPosition());
+		}
+	}
+}
+
+void TermApi::moveup(int n) const {
+	while (n-- > 0) {
+		Point pos = getPosition();
+		if (pos.y > 0) {
+			setPosition(Point(pos.x, pos.y - 1));
+		}
+	}
+}
+
+void TermApi::movedown(int n) const {
+	while (n-- > 0) {
+		Point pos = getPosition();
+		if (pos.y < getmaxy(stdscr) - 1) {
+			setPosition(Point(pos.x, pos.y + 1));
+		}
 	}
 }
 
@@ -142,6 +205,30 @@ std::size_t TermApi::charactersLeftLine() const {
 std::size_t TermApi::charactersLeftScreen() const {
 	return charactersLeftLine() +
 		(getmaxy(stdscr) - getPosition().y - 1) * getmaxx(stdscr);
+}
+
+std::size_t TermApi::charactersBeforeCursor() const {
+	Point pos = getPosition();
+	return pos.x + pos.y * getmaxx(stdscr);
+}
+
+std::size_t TermApi::charactersAfterCursor() const {
+	return charactersLeftScreen();
+}
+
+void TermApi::clearWindow() const {
+	Point pos = getPosition();
+	setPosition(Point(0, 0));
+	for (int y = 0; y < getmaxy(stdscr); y++) {
+		for (int x = 0; x < getmaxx(stdscr); x++) {
+			put(' ');
+		}
+	}
+	setPosition(pos);
+}
+
+int TermApi::getLineSize() const {
+	return getmaxx(stdscr);
 }
 
 }
