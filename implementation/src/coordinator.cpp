@@ -71,8 +71,13 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_ARROW_UP, &Coordinator::dispatchArrowUp},
 		{Keys::K_ARROW_LEFT, &Coordinator::dispatchArrowLeft},
 		{Keys::K_ARROW_RIGHT, &Coordinator::dispatchArrowRight},
+		{Keys::K_SARROW_DOWN, &Coordinator::dispatchShiftArrowDown},
+		{Keys::K_SARROW_UP, &Coordinator::dispatchShiftArrowUp},
+		{Keys::K_SARROW_LEFT, &Coordinator::dispatchShiftArrowLeft},
+		{Keys::K_SARROW_RIGHT, &Coordinator::dispatchShiftArrowRight},
 		{Keys::K_ESCAPE, &Coordinator::dispatchEscape},
 		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
+		{Keys::K_CTRL_V, &Coordinator::dispatchCtrlV},
 		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
 	};
 
@@ -95,6 +100,9 @@ int Coordinator::dispatchBackspace() {
 }
 
 int Coordinator::dispatchDelete() {
+	if (!line.postEmpty()) {
+		line.erasePost();
+	}
 	return ExitCode::SUCCESS;
 }
 
@@ -118,6 +126,26 @@ int Coordinator::dispatchArrowLeft() {
 	return ExitCode::SUCCESS;
 }
 
+int Coordinator::dispatchShiftArrowDown() {
+	mrlog::info("Call: %s", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchShiftArrowUp() {
+	mrlog::info("Call: %s", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchShiftArrowLeft() {
+	mrlog::info("Call: %s", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchShiftArrowRight() {
+	mrlog::info("Call: %s", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
 int Coordinator::dispatchArrowRight() {
 	if (!line.postEmpty()) {
 		line.moveright();
@@ -132,6 +160,11 @@ int Coordinator::dispatchEscape() {
 
 int Coordinator::dispatchCtrlQ() {
 	state = State::EXIT;
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchCtrlV() {
+	mrlog::info("ctrl v");
 	return ExitCode::SUCCESS;
 }
 

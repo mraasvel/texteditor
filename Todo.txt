@@ -1,24 +1,18 @@
 >> Todo <<
 
-	- Handle single line
-
-		- Pasting
-		- Selections:
-			- With shift + arrow
-			- Erasing
-			- Copying
-			- Cutting (copy + erase)
-			- With mouse?
-
 	- Handle multiple lines
 
 		- Linked list of lines
 		- Moving between lines
 		- When printing overlaps lines
 
-	- Cursor movement, coordinates:
-		- Scrolling beyond the end of the terminal screen
-		- Screen resizing support
+	- Open and load in files
+
+	- Selections:
+		- With shift + arrow keys
+		- Erasing
+
+	- Save file
 
 	- Ncurses Uses:
 

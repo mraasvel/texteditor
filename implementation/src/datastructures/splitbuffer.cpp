@@ -12,8 +12,16 @@ void SplitBuffer::insert(char c) {
 	pre.push_back(c);
 }
 
+void SplitBuffer::insert(const std::string& s) {
+	pre.append(s);
+}
+
 void SplitBuffer::erase() {
 	pre.pop_back();
+}
+
+void SplitBuffer::erasePost() {
+	post.pop_back();
 }
 
 /*

@@ -9,7 +9,9 @@ public:
 	SplitBuffer();
 	SplitBuffer(const std::string& post);
 	void insert(char c);
+	void insert(const std::string& s);
 	void erase();
+	void erasePost();
 	std::size_t moveleft(std::size_t n = 1);
 	std::size_t moveright(std::size_t n = 1);
 	std::size_t size() const;

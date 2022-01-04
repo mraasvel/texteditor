@@ -34,8 +34,13 @@ private:
 	int dispatchArrowUp();
 	int dispatchArrowLeft();
 	int dispatchArrowRight();
+	int dispatchShiftArrowDown();
+	int dispatchShiftArrowUp();
+	int dispatchShiftArrowLeft();
+	int dispatchShiftArrowRight();
 	int dispatchEscape();
 	int dispatchCtrlQ();
+	int dispatchCtrlV();
 	int dispatchWindowChange();
 
 private:
