@@ -7,11 +7,13 @@ namespace DataStructures {
 class SplitBuffer {
 public:
 	SplitBuffer();
-	SplitBuffer(const std::string& post);
+	SplitBuffer(std::string&& post);
+	void push(char c);
+	void push(const std::string& s);
 	void insert(char c);
-	void insert(const std::string& s);
 	void erase();
-	void erasePost();
+	void del();
+	std::string&& movePost();
 	std::size_t moveleft(std::size_t n = 1);
 	std::size_t moveright(std::size_t n = 1);
 	std::size_t size() const;

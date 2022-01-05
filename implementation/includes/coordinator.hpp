@@ -1,7 +1,7 @@
 #pragma once
 
 #include "termapi.hpp"
-#include "line.hpp"
+#include "datastructures/lines.hpp"
 
 namespace TextEditor {
 
@@ -47,6 +47,7 @@ private:
 	State state;
 	TermApi termapi;
 	Line line;
+	Lines lines;
 };
 
 }

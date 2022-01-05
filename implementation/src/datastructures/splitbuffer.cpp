@@ -5,22 +5,27 @@ namespace DataStructures {
 
 SplitBuffer::SplitBuffer() {}
 
-SplitBuffer::SplitBuffer(const std::string& post)
-: post(post) {}
+SplitBuffer::SplitBuffer(std::string&& post) {
+	std::swap(this->post, post);
+}
 
-void SplitBuffer::insert(char c) {
+void SplitBuffer::push(char c) {
 	pre.push_back(c);
 }
 
-void SplitBuffer::insert(const std::string& s) {
+void SplitBuffer::push(const std::string& s) {
 	pre.append(s);
+}
+
+void SplitBuffer::insert(char c) {
+	post.push_back(c);
 }
 
 void SplitBuffer::erase() {
 	pre.pop_back();
 }
 
-void SplitBuffer::erasePost() {
+void SplitBuffer::del() {
 	post.pop_back();
 }
 
@@ -45,6 +50,10 @@ std::size_t SplitBuffer::moveSplit(std::string& dest, std::string& src, std::siz
 
 std::size_t SplitBuffer::size() const {
 	return pre.size() + post.size();
+}
+
+std::string&& SplitBuffer::movePost() {
+	return std::move(post);
 }
 
 const std::string& SplitBuffer::getPre() const {

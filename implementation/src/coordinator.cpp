@@ -24,8 +24,8 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
-		termapi.render(line.getPre(), line.getPost());
-		// line.log();
+		// termapi.render(line.getPre(), line.getPost());
+		lines.logcurrent();
 	}
 	return ExitCode::SUCCESS;
 }
@@ -46,7 +46,7 @@ static bool shouldPrint(int ch) {
 Edge case: overflows to next line (current Y is already at the end)
 */
 void Coordinator::updatechar(int ch) {
-	line.insert(ch);
+	lines.push(ch);
 	termapi.moveright();
 }
 
@@ -63,7 +63,7 @@ Map of <key> to <function>
 This function is part of the coordinator, it can update the state (so we know when to exit or not)
 */
 int Coordinator::dispatch(int ch) {
-	static const std::unordered_map<int, DispatchFunction> functions = {
+	static const std::unordered_map<Keys, DispatchFunction > functions = {
 		{Keys::K_NEWLINE, &Coordinator::dispatchNewline},
 		{Keys::K_BACKSPACE, &Coordinator::dispatchBackspace},
 		{Keys::K_DELETEC, &Coordinator::dispatchDelete},
@@ -81,46 +81,47 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
 	};
 
-	if (functions.count(ch) > 0) {
-		return (this->*(functions.at(ch)))();
+	if (functions.count(static_cast<Keys>(ch)) > 0) {
+		return (this->*(functions.at(static_cast<Keys>(ch))))();
 	}
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchNewline() {
+	lines.insertNewline();
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchBackspace() {
-	if (!line.preEmpty()) {
-		line.erase();
+	if (!lines.preEmpty()) {
+		lines.erase();
 		termapi.moveleft();
 	}
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchDelete() {
-	if (!line.postEmpty()) {
-		line.erasePost();
+	if (!lines.postEmpty()) {
+		lines.del();
 	}
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowDown() {
 	int maxx = termapi.getLineSize();
-	termapi.moveright(line.moveright(maxx));
+	termapi.moveright(lines.moveright(maxx));
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowUp() {
 	int maxx = termapi.getLineSize();
-	termapi.moveleft(line.moveleft(maxx));
+	termapi.moveleft(lines.moveleft(maxx));
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowLeft() {
-	if (!line.preEmpty()) {
-		line.moveleft();
+	if (!lines.preEmpty()) {
+		lines.moveleft();
 		termapi.moveleft();
 	}
 	return ExitCode::SUCCESS;
@@ -147,8 +148,8 @@ int Coordinator::dispatchShiftArrowRight() {
 }
 
 int Coordinator::dispatchArrowRight() {
-	if (!line.postEmpty()) {
-		line.moveright();
+	if (!lines.postEmpty()) {
+		lines.moveright();
 		termapi.moveright();
 	}
 	return ExitCode::SUCCESS;

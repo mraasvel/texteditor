@@ -12,7 +12,7 @@ namespace TextEditor {
 
 class TermApi {
 public:
-	enum Keys {
+	enum class Keys : int32_t {
 		K_NEWLINE		= 13,
 		K_BACKSPACE		= KEY_BACKSPACE,
 		K_DELETEC		= KEY_DC,
