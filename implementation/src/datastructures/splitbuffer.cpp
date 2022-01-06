@@ -1,5 +1,6 @@
 #include "datastructures/splitbuffer.hpp"
 #include "util/mrlog.hpp" // REMOVE
+#include <stdexcept>
 
 namespace DataStructures {
 
@@ -70,6 +71,15 @@ bool SplitBuffer::preEmpty() const {
 
 bool SplitBuffer::postEmpty() const {
 	return post.empty();
+}
+
+// 12 3 : index = 2, pre.size() - n = 0, post.size() = 1
+// 12 43 : index = 2, pre.size() - n = 0, post.size() = 2
+char SplitBuffer::operator[](std::size_t n) const {
+	if (n >= size()) {
+		throw std::out_of_range("SplitBuffer");
+	}
+	return n < pre.size() ? pre[n] : post[post.size() - (n - pre.size()) - 1];
 }
 
 /*

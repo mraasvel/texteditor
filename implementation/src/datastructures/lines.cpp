@@ -3,11 +3,15 @@
 
 namespace TextEditor {
 
+
+Lines::PositionType::PositionType(const LinesType& lines)
+: line(lines.cbegin()), end(lines.cend()), index(0) {}
+
 /*
 Invariant: there is always at least one empty line */
 
 Lines::Lines()
-: lines(1), current(lines.begin()) {
+: lines(1), current(lines.begin()), topleft(lines) {
 	assert(current == lines.begin());
 }
 
@@ -50,6 +54,45 @@ bool Lines::postEmpty() const {
 
 bool Lines::preEmpty() const {
 	return current->preEmpty();
+}
+
+void Lines::cornerDown(std::size_t linesize) {
+	if (topleft.line->size() - topleft.index >= linesize) {
+		topleft.index += linesize;
+	} else {
+		++topleft.line;
+		topleft.index = 0;
+		assert(topleft.line != lines.end());
+	}
+}
+
+void Lines::cornerUp(std::size_t linesize) {
+	if (topleft.index >= linesize) {
+		topleft.index -= linesize;
+	} else {
+		assert(topleft.line != lines.begin());
+		--topleft.line;
+		topleft.index = topleft.line->size() - (topleft.line->size() % linesize);
+		assert(topleft.index < topleft.line->size());
+	}
+}
+
+Lines::PositionType Lines::getTopleft() const {
+	return topleft;
+}
+
+/*
+Return: '\n' (LF) char on end of line, EOF on no lines remaining */
+char Lines::nextChar(PositionType& position) {
+	if (position.index == position.line->size()) {
+		++position.line;
+		if (position.line == position.end) {
+			return 0;
+		}
+		position.index = 0;
+		return '\n';
+	}
+	return position.line->operator[](position.index++);
 }
 
 void Lines::logcurrent() const {

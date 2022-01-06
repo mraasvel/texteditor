@@ -1,11 +1,9 @@
 >> Todo <<
 
 	- Handle multiple lines
-
-		- Linked list of lines
-		- Moving between lines
-		- When printing overlaps lines
-
+		- Properly update the topleft corner when it's changed
+		- Go to correct place in previous line (cursor should be set appropriately)
+		
 	- Open and load in files
 
 	- Selections:

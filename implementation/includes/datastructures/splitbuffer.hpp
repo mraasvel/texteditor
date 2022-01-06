@@ -22,6 +22,8 @@ public:
 	bool preEmpty() const;
 	bool postEmpty() const;
 
+	char operator[](std::size_t n) const;
+
 /* DEBUG, REMOVE */
 	void log() const;
 private:

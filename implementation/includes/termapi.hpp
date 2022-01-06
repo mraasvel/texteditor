@@ -2,7 +2,7 @@
 
 // TODO: determine if this can be removed
 #include "util/point.hpp"
-#include "line.hpp"
+#include "datastructures/lines.hpp"
 #include <ncurses.h>
 #include <string>
 
@@ -54,7 +54,7 @@ public:
 	void moveup(int n = 1) const;
 	void movedown(int n = 1) const;
 
-	void render(const std::string& pre, const std::string& post) const;
+	void render(const Lines& lines) const;
 
 	void scrollDown() const;
 	void scrollUp() const;

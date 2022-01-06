@@ -22,6 +22,14 @@ class Lines {
 private:
 	using LinesType = std::list<Line>;
 	using LineIterator = LinesType::iterator;
+	using ConstLineIterator = LinesType::const_iterator;
+
+	struct PositionType {
+		PositionType(const LinesType& lines);
+		ConstLineIterator line;
+		ConstLineIterator end;
+		std::size_t index;
+	};
 public:
 	Lines();
 	void insertNewline();
@@ -35,11 +43,21 @@ public:
 	bool postEmpty() const;
 	bool preEmpty() const;
 	void logcurrent() const;
+
+	/*
+	When we scroll up or down,
+	we need to know the linesize to determine whether we have to go to a previous index or previous line */
+	void cornerDown(std::size_t linesize);
+	void cornerUp(std::size_t linesize);
+	static char nextChar(PositionType& position);
+	PositionType getTopleft() const;
+
 private:
 	/*
 	Very important that current is below lines (order of initializaiton) */
 	LinesType lines;
 	LineIterator current;
+	PositionType topleft; // the character in the topleft corner
 };
 
 }

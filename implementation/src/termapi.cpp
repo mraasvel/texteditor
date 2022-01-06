@@ -47,10 +47,16 @@ int TermApi::setRawMode() const {
 	return ExitCode::SUCCESS;
 }
 
-void TermApi::render(const std::string& pre, const std::string& post) const {
+void TermApi::render(const Lines& lines) const {
 	clearWindow();
-	putPre(pre);
-	putPost(post);
+	Point orig = getPosition();
+	setPosition(Point(0, 0));
+	auto it = lines.getTopleft();
+	char ch;
+	for (char ch = Lines::nextChar(it); ch != 0; ch = Lines::nextChar(it)) {
+		put(ch);
+	}
+	setPosition(orig);
 	refresh();
 }
 

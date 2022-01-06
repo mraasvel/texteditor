@@ -24,8 +24,8 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
-		// termapi.render(line.getPre(), line.getPost());
-		lines.logcurrent();
+		termapi.render(lines);
+		// lines.logcurrent();
 	}
 	return ExitCode::SUCCESS;
 }
@@ -89,6 +89,7 @@ int Coordinator::dispatch(int ch) {
 
 int Coordinator::dispatchNewline() {
 	lines.insertNewline();
+	termapi.put('\n');
 	return ExitCode::SUCCESS;
 }
 
