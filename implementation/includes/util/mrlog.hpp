@@ -21,7 +21,7 @@ enum class LogLevel : uint16_t {
 
 	template <typename OutStream>
 	void processFormat(OutStream& out, const char* format) {
-		out << format << std::endl;
+		out << format;
 	}
 
 	template<typename OutStream, typename T, typename... Args>
@@ -36,7 +36,6 @@ enum class LogLevel : uint16_t {
 				out << *format++;
 			}
 		}
-		out << std::endl;
 	}
 
 	}

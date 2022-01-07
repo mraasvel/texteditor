@@ -49,42 +49,44 @@ int TermApi::setRawMode() const {
 
 void TermApi::render(const Lines& lines) const {
 	clearWindow();
-	Point orig = getPosition();
 	setPosition(Point(0, 0));
 	auto it = lines.getTopleft();
-	char ch;
+	Point cursor(0, 0);
+
 	for (char ch = Lines::nextChar(it); ch != 0; ch = Lines::nextChar(it)) {
-		put(ch);
+		if (isEndOfScreen()) {
+			insch(ch);
+			break;
+		} else {
+			put(ch);
+		}
+		if (lines.isCursor(it)) {
+			cursor = getPosition();
+		}
 	}
-	setPosition(orig);
+	setPosition(cursor);
 	refresh();
 }
 
-void TermApi::putPre(const std::string& pre) const {
-	Point orig = getPosition();
-	std::size_t bytes = charactersBeforeCursor();
-	setPosition(Point(0, 0));
-	if (bytes < pre.size()) {
-		put(pre.substr(pre.size() - bytes));
-	} else {
-		put(pre);
-	}
-	setPosition(orig);
+bool TermApi::isStartOfScreen() const {
+	return isStartOfLine() && isStartOfLines();
+}
+bool TermApi::isStartOfLine() const {
+	return getPosition().x == 0;
+}
+bool TermApi::isStartOfLines() const {
+	return getPosition().y == 0;
 }
 
-void TermApi::putPost(const std::string& post) const {
-	Point orig = getPosition();
-	std::size_t bytes = charactersAfterCursor() + 1;
-	auto rit = post.crbegin();
-	while (bytes-- > 0 && rit != post.crend()) {
-		if (bytes == 0) {
-			insch(*rit);
-		} else {
-			put(*rit);
-		}
-		rit++;
-	}
-	setPosition(orig);
+
+bool TermApi::isEndOfScreen() const {
+	return isEndOfLine() && isEndOfLines();
+}
+bool TermApi::isEndOfLine() const {
+	return getPosition().x == getmaxx(stdscr) - 1;
+}
+bool TermApi::isEndOfLines() const {
+	return getPosition().y == getmaxy(stdscr) - 1;
 }
 
 int TermApi::getchar() const {

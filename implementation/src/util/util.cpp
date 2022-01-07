@@ -8,7 +8,7 @@
 namespace TextEditor {
 
 int syscallError(const std::string& s) {
-	mrlog::error("{}: {}", s, strerror(errno));
+	mrlog::error("{}: {}\n", s, strerror(errno));
 	return ExitCode::ERROR;
 }
 

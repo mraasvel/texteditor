@@ -33,16 +33,17 @@ private:
 public:
 	Lines();
 	void insertNewline();
-	std::size_t moveleft(std::size_t n = 1);
-	std::size_t moveright(std::size_t n = 1);
+	bool moveleft();
+	bool moveright();
 	void push(int c);
 	void push(const std::string& s);
-	void erase();
+	bool erase();
 	void insert(int c);
-	void del();
+	bool del();
 	bool postEmpty() const;
 	bool preEmpty() const;
 	void logcurrent() const;
+	void log() const;
 
 	/*
 	When we scroll up or down,
@@ -51,6 +52,10 @@ public:
 	void cornerUp(std::size_t linesize);
 	static char nextChar(PositionType& position);
 	PositionType getTopleft() const;
+	bool isCursor(const PositionType& pos) const;
+
+private:
+	void eraseLine(LineIterator pos);
 
 private:
 	/*
@@ -58,6 +63,7 @@ private:
 	LinesType lines;
 	LineIterator current;
 	PositionType topleft; // the character in the topleft corner
+	std::size_t line_index;
 };
 
 }

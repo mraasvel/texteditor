@@ -25,8 +25,9 @@ public:
 		K_SARROW_LEFT	= KEY_SLEFT,
 		K_SARROW_RIGHT	= KEY_SRIGHT,
 		K_ESCAPE		= 27,
-		K_CTRL_Q		= K_CTRL_CHAR('q'),
 		K_CTRL_C		= K_CTRL_CHAR('c'),
+		K_CTRL_P		= K_CTRL_CHAR('p'),
+		K_CTRL_Q		= K_CTRL_CHAR('q'),
 		K_CTRL_V		= K_CTRL_CHAR('v'),
 		K_WINCH			= KEY_RESIZE,
 	};
@@ -59,6 +60,12 @@ public:
 	void scrollDown() const;
 	void scrollUp() const;
 	int getLineSize() const;
+	bool isStartOfScreen() const;
+	bool isStartOfLine() const;
+	bool isStartOfLines() const;
+	bool isEndOfScreen() const;
+	bool isEndOfLine() const;
+	bool isEndOfLines() const;
 
 private:
 	int setRawMode() const;
@@ -70,8 +77,6 @@ private:
 	std::size_t charactersLeftScreen() const;
 	std::size_t charactersBeforeCursor() const;
 	std::size_t charactersAfterCursor() const;
-	void putPre(const std::string& pre) const;
-	void putPost(const std::string& pre) const;
 	void clearWindow() const;
 private:
 	WINDOW* screen;

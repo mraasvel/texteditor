@@ -22,6 +22,10 @@ void SplitBuffer::insert(char c) {
 	post.push_back(c);
 }
 
+void SplitBuffer::insert(const std::string& s) {
+	post.append(s);
+}
+
 void SplitBuffer::erase() {
 	pre.pop_back();
 }
@@ -39,6 +43,14 @@ std::size_t SplitBuffer::moveleft(std::size_t n) {
 
 std::size_t SplitBuffer::moveright(std::size_t n) {
 	return moveSplit(pre, post, n);
+}
+
+void SplitBuffer::moveStart() {
+	moveleft(pre.size());
+}
+
+void SplitBuffer::moveEnd() {
+	moveright(post.size());
 }
 
 std::size_t SplitBuffer::moveSplit(std::string& dest, std::string& src, std::size_t n) {
@@ -84,7 +96,7 @@ char SplitBuffer::operator[](std::size_t n) const {
 Debug
 */
 void SplitBuffer::log() const {
-	mrlog::info("PRE({}) - POST({})", pre, post);
+	mrlog::log("PRE({}) - POST({})", pre, post);
 }
 
 }

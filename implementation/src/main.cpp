@@ -17,7 +17,7 @@ static int run() {
 		Coordinator coordinator;
 		return coordinator.run();
 	} catch (const std::exception& e) {
-		mrlog::fatal("caught exception: {}", e.what());
+		mrlog::fatal("caught exception: {}\n", e.what());
 		return ExitCode::ERROR;
 	}
 }

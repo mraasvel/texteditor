@@ -1,8 +1,11 @@
 >> Todo <<
 
-	- Handle multiple lines
-		- Properly update the topleft corner when it's changed
-		- Go to correct place in previous line (cursor should be set appropriately)
+	- Movement:
+
+		- Arrow UP
+		- Arrow DOWN
+		- Window Changing? (bring cursor back into view)
+
 		
 	- Open and load in files
 

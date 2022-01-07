@@ -11,11 +11,14 @@ public:
 	void push(char c);
 	void push(const std::string& s);
 	void insert(char c);
+	void insert(const std::string& s);
 	void erase();
 	void del();
 	std::string&& movePost();
 	std::size_t moveleft(std::size_t n = 1);
 	std::size_t moveright(std::size_t n = 1);
+	void moveStart();
+	void moveEnd();
 	std::size_t size() const;
 	const std::string& getPre() const;
 	const std::string& getPost() const;
