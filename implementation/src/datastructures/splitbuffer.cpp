@@ -73,8 +73,6 @@ bool SplitBuffer::postEmpty() const {
 	return post.empty();
 }
 
-// 12 3 : index = 2, pre.size() - n = 0, post.size() = 1
-// 12 43 : index = 2, pre.size() - n = 0, post.size() = 2
 char SplitBuffer::operator[](std::size_t n) const {
 	if (n >= size()) {
 		throw std::out_of_range("SplitBuffer");
@@ -86,7 +84,7 @@ char SplitBuffer::operator[](std::size_t n) const {
 Debug
 */
 void SplitBuffer::log() const {
-	mrlog::info("PRE(%s) - POST(%s)", pre.c_str(), post.c_str());
+	mrlog::info("PRE({}) - POST({})", pre, post);
 }
 
 }

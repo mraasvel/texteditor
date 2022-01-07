@@ -8,7 +8,8 @@
 namespace TextEditor {
 
 static int run() {
-	mrlog::clear();
+	mrlog::setLogFile("mrlog.log");
+	mrlog::clearLog();
 	if (!isatty(STDIN_FILENO)) {
 		return syscallError("isatty");
 	}
@@ -16,7 +17,7 @@ static int run() {
 		Coordinator coordinator;
 		return coordinator.run();
 	} catch (const std::exception& e) {
-		mrlog::fatal("caught exception: %s", e.what());
+		mrlog::fatal("caught exception: {}", e.what());
 		return ExitCode::ERROR;
 	}
 }

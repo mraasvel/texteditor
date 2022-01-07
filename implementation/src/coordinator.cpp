@@ -18,14 +18,14 @@ int Coordinator::run() {
 	}
 	while (state == State::ACTIVE) {
 		int ch = termapi.getchar();
-		// mrlog::info("%s - %d", key_name(ch), ch);
+		// mrlog::info("{} - {}", key_name(ch), ch);
 		if (shouldPrint(ch)) {
 			updatechar(ch);
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
 		termapi.render(lines);
-		// lines.logcurrent();
+		lines.logcurrent();
 	}
 	return ExitCode::SUCCESS;
 }
@@ -129,22 +129,22 @@ int Coordinator::dispatchArrowLeft() {
 }
 
 int Coordinator::dispatchShiftArrowDown() {
-	mrlog::info("Call: %s", __FUNCTION__);
+	mrlog::info("Call: {}", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchShiftArrowUp() {
-	mrlog::info("Call: %s", __FUNCTION__);
+	mrlog::info("Call: {}", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchShiftArrowLeft() {
-	mrlog::info("Call: %s", __FUNCTION__);
+	mrlog::info("Call: {}", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchShiftArrowRight() {
-	mrlog::info("Call: %s", __FUNCTION__);
+	mrlog::info("Call: {}", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
 
@@ -166,7 +166,6 @@ int Coordinator::dispatchCtrlQ() {
 }
 
 int Coordinator::dispatchCtrlV() {
-	mrlog::info("ctrl v");
 	return ExitCode::SUCCESS;
 }
 
