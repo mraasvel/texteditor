@@ -67,10 +67,15 @@ void logKey(int ch) {
 		mrlog::error("logkey: failed to open keylog file: {}\n", file);
 		return;
 	}
-	if (key_name(ch) == nullptr) {
+#ifdef __linux__
+	const char* str = key_name(ch);
+#else
+	const char* str = keyname(ch);
+#endif
+	if (str == nullptr) {
 		ofs << ch << " null\n";
 	} else {
-		ofs << ch << " " << key_name(ch) << "\n";
+		ofs << ch << " " << str << "\n";
 	}
 	ofs.close();
 }

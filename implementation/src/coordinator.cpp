@@ -67,7 +67,7 @@ Map of <key> to <function>
 This function is part of the coordinator, it can update the state (so we know when to exit or not)
 */
 int Coordinator::dispatch(int ch) {
-	static const std::unordered_map<Keys, DispatchFunction > functions = {
+	static const std::unordered_map<int, DispatchFunction > functions = {
 		{Keys::K_NEWLINE, &Coordinator::dispatchNewline},
 		{Keys::K_BACKSPACE, &Coordinator::dispatchBackspace},
 		{Keys::K_DELETEC, &Coordinator::dispatchDelete},
@@ -88,8 +88,8 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_END, &Coordinator::dispatchEnd},
 	};
 
-	if (functions.count(static_cast<Keys>(ch)) > 0) {
-		return (this->*(functions.at(static_cast<Keys>(ch))))();
+	if (functions.count(ch) > 0) {
+		return (this->*(functions.at(ch)))();
 	}
 	return ExitCode::SUCCESS;
 }
