@@ -27,10 +27,15 @@ SRC := $(shell find $(SDIR) -name "*.cpp" -type f)
 OBJ := $(patsubst $(SDIR)/%.cpp,$(ODIR)/$(SUBDIR)%.o,$(SRC))
 DEP := $(patsubst $(SDIR)/%.cpp,$(DDIR)/$(SUBDIR)%.d,$(SRC))
 
+OS = $(shell uname)
+
 # Compilation
 CXX = clang++
 IFLAGS = -I$(IDIR)
-LFLAGS = -lncurses -lncursesw
+LFLAGS = -lncurses
+ifeq ($(OS),Linux)
+	LFLAGS += -lncursesw
+endif
 CXXFLAGS = -Wall -Wextra -Werror -std=c++11 -pedantic
 DFLAGS := -O0 -g3
 
