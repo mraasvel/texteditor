@@ -38,6 +38,8 @@ public:
 	void insertNewline();
 	bool moveleft();
 	bool moveright();
+	std::size_t moveStart();
+	std::size_t moveEnd();
 	bool moveDown(std::size_t linesize);
 	bool moveUp(std::size_t linesize);
 	void push(int c);
@@ -47,20 +49,23 @@ public:
 	bool del();
 	bool postEmpty() const;
 	bool preEmpty() const;
-	void logcurrent() const;
-	void log() const;
 
-	/*
-	When we scroll up or down,
-	we need to know the linesize to determine whether we have to go to a previous index or previous line */
+
 	void cornerDown(std::size_t linesize);
 	void cornerUp(std::size_t linesize);
 	static char nextChar(PositionType& position);
 	PositionType getTopleft() const;
 	bool isCursor(const PositionType& pos) const;
 
+	void recalibrateWindow(std::size_t linesize, std::size_t rows);
+
+/* Logging */
+	void logcurrent() const;
+	void log() const;
+
 private:
 	void eraseLine(LineIterator pos);
+	std::size_t distanceToCursor(std::size_t linesize) const;
 
 private:
 	/*
@@ -68,7 +73,6 @@ private:
 	LinesType lines;
 	LineIterator current;
 	PositionType topleft; // the character in the topleft corner
-	std::size_t line_index;
 };
 
 }

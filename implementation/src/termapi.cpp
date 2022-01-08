@@ -175,6 +175,26 @@ void TermApi::movedown(int n) const {
 	}
 }
 
+std::size_t TermApi::calculateUnderflowedLines(std::size_t chars) const {
+	Point pos {getPosition()};
+	std::size_t rows_left = pos.y;
+	std::size_t rows_moved = (getLineSize() - pos.x + chars) / getLineSize() - 1;
+	if (rows_left < rows_moved) {
+		return rows_moved - rows_left;
+	}
+	return 0;
+}
+
+std::size_t TermApi::calculateOverflowedLines(std::size_t chars) const {
+	Point pos {getPosition()};
+	std::size_t rows_left = getRows() - pos.y - 1;
+	std::size_t rows_moved = (pos.x + chars) / getLineSize();
+	if (rows_left < rows_moved) {
+		return rows_moved - rows_left;
+	}
+	return 0;
+}
+
 void TermApi::setPosition(const Point& p) const {
 	move(p.y, p.x);
 }
@@ -243,6 +263,10 @@ void TermApi::clearWindow() const {
 
 int TermApi::getLineSize() const {
 	return getmaxx(stdscr);
+}
+
+int TermApi::getRows() const {
+	return getmaxy(stdscr);
 }
 
 }

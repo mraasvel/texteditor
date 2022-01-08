@@ -12,7 +12,7 @@ namespace TextEditor {
 
 class TermApi {
 public:
-	enum class Keys : int32_t {
+	enum class Keys : uint16_t {
 		K_NEWLINE		= 13,
 		K_BACKSPACE		= KEY_BACKSPACE,
 		K_DELETEC		= KEY_DC,
@@ -30,6 +30,8 @@ public:
 		K_CTRL_Q		= K_CTRL_CHAR('q'),
 		K_CTRL_V		= K_CTRL_CHAR('v'),
 		K_WINCH			= KEY_RESIZE,
+		K_HOME			= KEY_HOME,
+		K_END			= KEY_END,
 	};
 
 private:
@@ -61,12 +63,17 @@ public:
 	void scrollDown() const;
 	void scrollUp() const;
 	int getLineSize() const;
+	int getRows() const;
+
 	bool isStartOfScreen() const;
 	bool isStartOfLine() const;
 	bool isStartOfLines() const;
 	bool isEndOfScreen() const;
 	bool isEndOfLine() const;
 	bool isEndOfLines() const;
+
+	std::size_t calculateUnderflowedLines(std::size_t chars) const;
+	std::size_t calculateOverflowedLines(std::size_t chars) const;
 
 private:
 	int setRawMode() const;

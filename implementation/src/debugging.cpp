@@ -8,9 +8,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <dirent.h>
-#include <cstdio> //REMOVE
-#include <cerrno> //REMOVE
-#include <cstring>
 
 namespace TextEditor {
 

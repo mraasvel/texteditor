@@ -24,7 +24,7 @@ std::size_t Lines::PositionType::afterIndex() const {
 Invariant: there is always at least one empty line */
 
 Lines::Lines()
-: lines(1), current(lines.begin()), topleft(lines), line_index(0) {
+: lines(1), current(lines.begin()), topleft(lines) {
 	if (lines.begin() != current) {
 		throw std::runtime_error("Lines: constructor failed because of member variable order");
 	}
@@ -59,6 +59,14 @@ bool Lines::moveright() {
 		current->moveright();
 	}
 	return true;
+}
+
+std::size_t Lines::moveStart() {
+	return current->moveStart();
+}
+
+std::size_t Lines::moveEnd() {
+	return current->moveEnd();
 }
 
 bool Lines::moveDown(std::size_t linesize) {
@@ -181,6 +189,27 @@ Lines::PositionType Lines::getTopleft() const {
 
 bool Lines::isCursor(const PositionType& pos) const {
 	return pos.line == current && pos.index == current->getPre().size();
+}
+
+/*
+Move topleft so that the current cursor position fits inside the window */
+void Lines::recalibrateWindow(std::size_t linesize, std::size_t rows) {
+	auto distance {distanceToCursor(linesize) + 1};
+	while (distance-- > rows) {
+		cornerDown(linesize);
+	}
+}
+
+std::size_t Lines::distanceToCursor(std::size_t linesize) const {
+	auto it = topleft.line;
+	std::size_t distance {0};
+	while (it != current) {
+		distance += it->getPre().size() / linesize;
+		++distance;
+		++it;
+	}
+	distance += it->getPre().size() / linesize;
+	return distance;
 }
 
 /*

@@ -9,7 +9,7 @@
 namespace TextEditor {
 
 Coordinator::Coordinator()
-: state(State::ACTIVE) {}
+: state(State::ACTIVE), winch(false) {}
 
 static bool shouldPrint(int ch);
 
@@ -20,6 +20,11 @@ int Coordinator::run() {
 	while (state == State::ACTIVE) {
 		int ch = termapi.getchar();
 		logKey(ch);
+		if (windowChanged(ch)) {
+			mrlog::info("detected window change\n");
+			winch = false;
+			recalibrateWindow();
+		}
 		if (shouldPrint(ch)) {
 			updatechar(ch);
 		} else if (dispatch(ch) == ExitCode::ERROR) {
@@ -40,6 +45,14 @@ int Coordinator::init() {
 
 static bool shouldPrint(int ch) {
 	return isprint(ch) || ch == '\t';
+}
+
+bool Coordinator::windowChanged(int ch) const {
+	return winch && static_cast<Keys>(ch) != Keys::K_WINCH;
+}
+
+void Coordinator::recalibrateWindow() {
+	lines.recalibrateWindow(termapi.getLineSize(), termapi.getRows());
 }
 
 void Coordinator::updatechar(int ch) {
@@ -71,6 +84,8 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
 		{Keys::K_CTRL_V, &Coordinator::dispatchCtrlV},
 		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
+		{Keys::K_HOME, &Coordinator::dispatchHome},
+		{Keys::K_END, &Coordinator::dispatchEnd},
 	};
 
 	if (functions.count(static_cast<Keys>(ch)) > 0) {
@@ -168,6 +183,26 @@ int Coordinator::dispatchCtrlV() {
 }
 
 int Coordinator::dispatchWindowChange() {
+	winch = true;
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchHome() {
+	auto chars = lines.moveStart();
+	auto nlines = termapi.calculateUnderflowedLines(chars);
+	auto linesize = termapi.getLineSize();
+	while (nlines-- > 0) {
+		lines.cornerUp(linesize);
+	}
+	return ExitCode::SUCCESS;
+}
+int Coordinator::dispatchEnd() {
+	auto chars = lines.moveEnd();
+	auto nlines = termapi.calculateOverflowedLines(chars);
+	auto linesize = termapi.getLineSize();
+	while (nlines-- > 0) {
+		lines.cornerDown(linesize);
+	}
 	return ExitCode::SUCCESS;
 }
 

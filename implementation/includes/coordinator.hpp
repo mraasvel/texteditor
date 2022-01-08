@@ -25,6 +25,8 @@ private:
 	int init();
 	void updatechar(int ch);
 	int dispatch(int ch);
+	bool windowChanged(int ch) const;
+	void recalibrateWindow();
 
 /* Dispatchers */
 	typedef int (Coordinator::*DispatchFunction)();
@@ -45,12 +47,15 @@ private:
 	int dispatchCtrlQ();
 	int dispatchCtrlV();
 	int dispatchWindowChange();
+	int dispatchHome();
+	int dispatchEnd();
 
 private:
 	State state;
 	TermApi termapi;
 	Line line;
 	Lines lines;
+	bool winch;
 };
 
 }

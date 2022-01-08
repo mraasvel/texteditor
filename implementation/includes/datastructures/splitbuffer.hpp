@@ -18,8 +18,8 @@ public:
 	std::size_t moveleft(std::size_t n = 1);
 	std::size_t moveright(std::size_t n = 1);
 	void moveTo(std::size_t index);
-	void moveStart();
-	void moveEnd();
+	std::size_t moveStart();
+	std::size_t moveEnd();
 	std::size_t size() const;
 	const std::string& getPre() const;
 	const std::string& getPost() const;

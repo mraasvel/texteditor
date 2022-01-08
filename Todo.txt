@@ -1,18 +1,11 @@
 >> Todo <<
 
-	- Movement:
-
-		- Window Changing? (bring cursor back into view)
-		- Home + End to jump to start and end of line
-
-	- PR
-
 	- Open and load in files
 	- Save file
 
 	- PR
 
-	- Ctrl + Arrow keys? (jumping words)
+	- Ctrl + Arrow keys? (jumping words: words are defined by characters seperated by certain delimiters)
 	- Selections:
 		- With shift + arrow keys
 		- Erasing

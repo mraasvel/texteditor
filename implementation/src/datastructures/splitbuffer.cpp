@@ -53,12 +53,16 @@ void SplitBuffer::moveTo(std::size_t index) {
 	}
 }
 
-void SplitBuffer::moveStart() {
+std::size_t SplitBuffer::moveStart() {
+	auto size = pre.size();
 	moveleft(pre.size());
+	return size;
 }
 
-void SplitBuffer::moveEnd() {
+std::size_t SplitBuffer::moveEnd() {
+	auto size = post.size();
 	moveright(post.size());
+	return size;
 }
 
 std::size_t SplitBuffer::moveSplit(std::string& dest, std::string& src, std::size_t n) {
