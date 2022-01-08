@@ -49,11 +49,18 @@ int TermApi::setRawMode() const {
 
 void TermApi::render(const Lines& lines) const {
 	clearWindow();
-	setPosition(Point(0, 0));
-	auto it = lines.getTopleft();
-	Point cursor(0, 0);
+	renderLines(lines);
+	refresh();
+}
 
+void TermApi::renderLines(const Lines& lines) const {
+	setPosition(Point(0, 0));
+	Point cursor(0, 0);
+	auto it = lines.getTopleft();
 	for (char ch = Lines::nextChar(it); ch != 0; ch = Lines::nextChar(it)) {
+		if (isEndOfLines() && ch == '\n') {
+			break;
+		}
 		if (isEndOfScreen()) {
 			insch(ch);
 			break;
@@ -65,7 +72,6 @@ void TermApi::render(const Lines& lines) const {
 		}
 	}
 	setPosition(cursor);
-	refresh();
 }
 
 bool TermApi::isStartOfScreen() const {

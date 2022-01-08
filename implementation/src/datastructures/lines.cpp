@@ -9,6 +9,17 @@ namespace TextEditor {
 Lines::PositionType::PositionType(const LinesType& lines)
 : line(lines.cbegin()), end(lines.cend()), index(0) {}
 
+Lines::PositionType::PositionType(const ConstLineIterator& line, const ConstLineIterator& end, std::size_t index)
+: line(line), end(end), index(index) {}
+
+std::size_t Lines::PositionType::beforeIndex() const {
+	return index;
+}
+
+std::size_t Lines::PositionType::afterIndex() const {
+	return line->size() - index;
+}
+
 /*
 Invariant: there is always at least one empty line */
 
@@ -46,6 +57,37 @@ bool Lines::moveright() {
 		current->moveStart();
 	} else {
 		current->moveright();
+	}
+	return true;
+}
+
+bool Lines::moveDown(std::size_t linesize) {
+	std::size_t after = current->getPost().size();
+	std::size_t index = current->getPre().size();
+	if (after >= linesize) {
+		current->moveright(linesize);
+	} else if (std::next(current) != lines.end()) {
+		++current;
+		current->moveStart();
+		current->moveright(index % linesize);
+	} else {
+		current->moveEnd();
+		return false;
+	}
+	return true;
+}
+
+bool Lines::moveUp(std::size_t linesize) {
+	std::size_t index = current->getPre().size();
+	if (index >= linesize) {
+		current->moveleft(linesize);
+	} else if (current != lines.begin()) {
+		--current;
+		current->moveTo(current->size() - (current->size() % linesize));
+		current->moveright(index);
+	} else {
+		current->moveStart();
+		return false;
 	}
 	return true;
 }
@@ -125,8 +167,9 @@ void Lines::cornerUp(std::size_t linesize) {
 		}
 		--topleft.line;
 		topleft.index = topleft.line->size() - (topleft.line->size() % linesize);
-		if (topleft.index >= topleft.line->size()) {
+		if (topleft.index > topleft.line->size()) {
 			mrlog::fatal("cornerUp: topleft index miscalculation\n");
+			mrlog::info("index: {}, topleft.linesize: {}\n", topleft.index, topleft.line->size());
 			throw std::runtime_error("corner up");
 		}
 	}
@@ -162,8 +205,14 @@ void Lines::log() const {
 		if (it == current) {
 			mrlog::log("  <- Current");
 		}
+		if (it == topleft.line) {
+			mrlog::log(" <- Topleft Corner");
+		}
 		mrlog::log("\n");
 	}
+	topleft.line->log();
+	mrlog::log("  <- Topleft: {}", topleft.index);
+	mrlog::log("\n");
 }
 
 void Lines::logcurrent() const {

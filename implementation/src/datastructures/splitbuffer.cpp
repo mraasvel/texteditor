@@ -45,6 +45,14 @@ std::size_t SplitBuffer::moveright(std::size_t n) {
 	return moveSplit(pre, post, n);
 }
 
+void SplitBuffer::moveTo(std::size_t index) {
+	if (index >= pre.size()) {
+		moveright(index - pre.size());
+	} else {
+		moveleft(pre.size() - index);
+	}
+}
+
 void SplitBuffer::moveStart() {
 	moveleft(pre.size());
 }

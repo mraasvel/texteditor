@@ -29,6 +29,10 @@ int Coordinator::run() {
 	return ExitCode::SUCCESS;
 }
 
+void Coordinator::log() const {
+	lines.log();
+}
+
 int Coordinator::init() {
 	return termapi.init();
 }
@@ -95,10 +99,18 @@ int Coordinator::dispatchDelete() {
 }
 
 int Coordinator::dispatchArrowDown() {
+	const std::size_t linesize = termapi.getLineSize();
+	if (lines.moveDown(linesize) && termapi.isEndOfLines()) {
+		lines.cornerDown(linesize);
+	}
 	return ExitCode::SUCCESS;
 }
 
 int Coordinator::dispatchArrowUp() {
+	const std::size_t linesize = termapi.getLineSize();
+	if (lines.moveUp(linesize) && termapi.isStartOfLines()) {
+		lines.cornerUp(linesize);
+	}
 	return ExitCode::SUCCESS;
 }
 

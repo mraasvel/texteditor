@@ -19,6 +19,8 @@ public:
 	Coordinator();
 	int run();
 
+	void log() const;
+
 private:
 	int init();
 	void updatechar(int ch);

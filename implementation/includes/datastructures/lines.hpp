@@ -26,6 +26,9 @@ private:
 
 	struct PositionType {
 		PositionType(const LinesType& lines);
+		PositionType(const ConstLineIterator& line, const ConstLineIterator& end, std::size_t index);
+		std::size_t beforeIndex() const;
+		std::size_t afterIndex() const;
 		ConstLineIterator line;
 		ConstLineIterator end;
 		std::size_t index;
@@ -35,6 +38,8 @@ public:
 	void insertNewline();
 	bool moveleft();
 	bool moveright();
+	bool moveDown(std::size_t linesize);
+	bool moveUp(std::size_t linesize);
 	void push(int c);
 	void push(const std::string& s);
 	bool erase();

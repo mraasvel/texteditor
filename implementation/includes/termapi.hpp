@@ -56,6 +56,7 @@ public:
 	void movedown(int n = 1) const;
 
 	void render(const Lines& lines) const;
+	void renderLines(const Lines& lines) const;
 
 	void scrollDown() const;
 	void scrollUp() const;

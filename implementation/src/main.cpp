@@ -13,11 +13,12 @@ static int run() {
 	if (!isatty(STDIN_FILENO)) {
 		return syscallError("isatty");
 	}
+	Coordinator coordinator;
 	try {
-		Coordinator coordinator;
 		return coordinator.run();
 	} catch (const std::exception& e) {
 		mrlog::fatal("caught exception: {}\n", e.what());
+		coordinator.log();
 		return ExitCode::ERROR;
 	}
 }

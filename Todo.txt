@@ -2,18 +2,21 @@
 
 	- Movement:
 
-		- Arrow UP
-		- Arrow DOWN
+		- Tried to go up when I couldn't
 		- Window Changing? (bring cursor back into view)
+		- Home + End to jump to start and end of line
 
-		
+	- PR
+
 	- Open and load in files
+	- Save file
 
+	- PR
+
+	- Ctrl + Arrow keys? (jumping words)
 	- Selections:
 		- With shift + arrow keys
 		- Erasing
-
-	- Save file
 
 	- Ncurses Uses:
 
