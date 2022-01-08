@@ -1,0 +1,53 @@
+-- Modifying Terminal Settings
+
+	tcgetattr
+	tcsetattr
+
+		https://man7.org/linux/man-pages/man3/tcflush.3.html
+		
+		TCSAFLUSH:
+			Given to tcsetattr to make the changes after all output has been transmitted,
+			all input that has not yet been read will be discarded
+
+		tcsetattr returns success if ANY of the changes happened
+
+-- Chosen Terminal Settings (canonical mode) --
+
+	TerminalSettings::generateTermiosSettings
+
+	-- Meaning of Flags --
+
+		settings.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+			Turned Off:
+				IGNBRK: Ignores a break condition if it happens
+				BRKINT: A break condition (https://www.cmrr.umn.edu/~strupp/serial.html#2_3_3) causes a SIGINT
+				PARMRK: Input bytes with parity or framing errors are marked
+				ISTRIP: Causes the 8th bit to be stripped from an input byte
+				INLCR: Translate NL to CR on input
+				IGNCR: Ignore CR on input
+				ICRNL: Translate CR to NL on input
+				IXON: Enables XON/XOFF (Ctrl-S, Ctrl-Q)
+
+		settings.c_oflag &= ~(OPOST);
+			Turned Off:
+				OPOST: Implementation defined output processing (\n print \r\n on linux for example)
+
+		settings.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+			Turned Off:
+				ECHO: printing input characters
+				ECHONL: printing newline
+				ICANON: canonical mode
+				ISIG: receiving signals (SIGINT, SIGQUIT)
+				IEXTEN: preventing some special characters to be interpreted
+
+		settings.c_cflag &= ~(CSIZE | PARENB);
+		settings.c_cflag |= CS8;
+			CSIZE: Set character size mask to 0 (reset)
+			CS8: Set the character size mask to 8 bits per byte
+			PARENB: Disable parity generation on output and parity checking for input
+
+
+		settings.c_cc[VMIN] = 1;
+		settings.c_cc[VTIME] = 0;
+			VMIN: min characters to read before returning
+			VTIME: timeout for read if VMIN chars have not been read

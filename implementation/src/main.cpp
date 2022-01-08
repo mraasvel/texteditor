@@ -1,35 +1,31 @@
 #include "text_editor.hpp"
-#include "terminal_settings.hpp"
 #include "util/util.hpp"
-#include <iostream>
-#include <termios.h>
+#include "util/mrlog.hpp"
+#include "termapi.hpp"
+#include "coordinator.hpp"
 #include <unistd.h>
 
 namespace TextEditor {
 
-typedef wint_t buffer_t;
-
-int setTerminalMode() {
-	if (atexit(TerminalSettings::reset) != 0) {
-		syscallError("atexit");
-		return ExitCode::ERROR;
-	}
-	return TerminalSettings::set();
-}
-
-int run() {
+static int run() {
+	mrlog::clearLog();
 	if (!isatty(STDIN_FILENO)) {
-		syscallError("isatty");
+		return syscallError("isatty");
+	}
+	Coordinator coordinator;
+	try {
+		return coordinator.run();
+	} catch (const std::exception& e) {
+		mrlog::fatal("caught exception: {}\n", e.what());
+		coordinator.log();
 		return ExitCode::ERROR;
 	}
-	if (setTerminalMode() == ExitCode::ERROR) {
-		return ExitCode::ERROR;
-	}
-	return ExitCode::OK;
 }
 
 }
 
+#ifndef CATCH_CONFIG_MAIN
 int main() {
 	return TextEditor::run();
 }
+#endif /* CATCH_CONFIG_MAIN */

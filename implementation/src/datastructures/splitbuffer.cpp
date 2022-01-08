@@ -1,0 +1,114 @@
+#include "datastructures/splitbuffer.hpp"
+#include "util/mrlog.hpp" // REMOVE
+#include <stdexcept>
+
+namespace DataStructures {
+
+SplitBuffer::SplitBuffer() {}
+
+SplitBuffer::SplitBuffer(std::string&& post) {
+	std::swap(this->post, post);
+}
+
+void SplitBuffer::push(char c) {
+	pre.push_back(c);
+}
+
+void SplitBuffer::push(const std::string& s) {
+	pre.append(s);
+}
+
+void SplitBuffer::insert(char c) {
+	post.push_back(c);
+}
+
+void SplitBuffer::insert(const std::string& s) {
+	post.append(s);
+}
+
+void SplitBuffer::erase() {
+	pre.pop_back();
+}
+
+void SplitBuffer::del() {
+	post.pop_back();
+}
+
+/*
+Returns amount of bytes the line was able to move left
+*/
+std::size_t SplitBuffer::moveleft(std::size_t n) {
+	return moveSplit(post, pre, n);
+}
+
+std::size_t SplitBuffer::moveright(std::size_t n) {
+	return moveSplit(pre, post, n);
+}
+
+void SplitBuffer::moveTo(std::size_t index) {
+	if (index >= pre.size()) {
+		moveright(index - pre.size());
+	} else {
+		moveleft(pre.size() - index);
+	}
+}
+
+std::size_t SplitBuffer::moveStart() {
+	auto size = pre.size();
+	moveleft(pre.size());
+	return size;
+}
+
+std::size_t SplitBuffer::moveEnd() {
+	auto size = post.size();
+	moveright(post.size());
+	return size;
+}
+
+std::size_t SplitBuffer::moveSplit(std::string& dest, std::string& src, std::size_t n) {
+	n = std::min(src.size(), n);
+	// append in reverse order
+	dest.append(src.crbegin(), src.crbegin() + n);
+	src.erase(src.size() - n);
+	return n;
+}
+
+std::size_t SplitBuffer::size() const {
+	return pre.size() + post.size();
+}
+
+std::string&& SplitBuffer::movePost() {
+	return std::move(post);
+}
+
+const std::string& SplitBuffer::getPre() const {
+	return pre;
+}
+
+const std::string& SplitBuffer::getPost() const {
+	return post;
+}
+
+bool SplitBuffer::preEmpty() const {
+	return pre.empty();
+}
+
+bool SplitBuffer::postEmpty() const {
+	return post.empty();
+}
+
+char SplitBuffer::operator[](std::size_t n) const {
+	if (n >= size()) {
+		throw std::out_of_range("SplitBuffer");
+	}
+	return n < pre.size() ? pre[n] : post[post.size() - (n - pre.size()) - 1];
+}
+
+/*
+Debug
+*/
+void SplitBuffer::log() const {
+	mrlog::log("PRE({}) - POST({})", pre, post);
+}
+
+}

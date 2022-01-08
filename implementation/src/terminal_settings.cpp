@@ -7,42 +7,81 @@
 
 namespace TextEditor {
 
-static int confirmTcChanges(struct termios& settings) {
+/*
+How the TerminalSettings should be called
+*/
+int setTerminalMode() {
+	if (atexit(TerminalSettings::reset) != 0) {
+		return syscallError("atexit");
+	}
+	if (TerminalSettings::saveCurrent() == ExitCode::ERROR) {
+		return ExitCode::ERROR;
+	}
+	return TerminalSettings::setRawMode();
+}
+
+/*
+See documentation: termios.txt for details
+*/
+struct termios TerminalSettings::getRawModeSettings() {
+	struct termios settings(terminfo.orig);
+	settings.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP | INLCR | IGNCR | ICRNL | IXON);
+	settings.c_oflag &= ~(OPOST);
+	settings.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+	settings.c_cflag &= ~(CSIZE | PARENB);
+	settings.c_cflag |= CS8;
+	settings.c_cc[VMIN] = 1;
+	settings.c_cc[VTIME] = 0;
+	return settings;
+}
+
+// TODO: More specific error: list the settings not being turned on for example
+static int validateTerminalChanges(struct termios& settings) {
 	struct termios current;
 	memset(&current, 0, sizeof(struct termios));
 	if (tcgetattr(STDIN_FILENO, &current) == -1) {
-		syscallError("tcgetattr");
-		return ExitCode::ERROR;
+		return syscallError("tcgetattr");
 	}
 	if (memcmp(&current, &settings, sizeof(struct termios)) != 0) {
-		mrlog::error("tcsetattr: some terminal settings were not set");
+		mrlog::error("tcsetattr: some terminal settings were not set\n");
 		return ExitCode::ERROR;
 	}
-	return ExitCode::OK;
+	mrlog::debug("termios settings modified\n");
+	return ExitCode::SUCCESS;
 }
 
-int TerminalSettings::set() {
-	memset(&terminfo.orig, 0, sizeof(struct termios));
-	if (tcgetattr(STDIN_FILENO, &terminfo.orig) == -1) {
-		syscallError("tcgetattr");
+int TerminalSettings::setRawMode() {
+	if (!isOriginalSet()) {
+		mrlog::warn("set original terminal first\n");
 		return ExitCode::ERROR;
 	}
-	struct termios settings(terminfo.orig);
-	settings.c_lflag &= ~(ECHO);
+	struct termios settings = getRawModeSettings();
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &settings)) {
-		syscallError("tcsetattr");
-		return ExitCode::ERROR;
+		return syscallError("tcsetattr");
 	}
 	terminfo.set = true;
-	return confirmTcChanges(settings);
+	return validateTerminalChanges(settings);
+}
+
+bool TerminalSettings::isOriginalSet() {
+	return terminfo.set;
+}
+
+int TerminalSettings::saveCurrent() {
+	memset(&terminfo.orig, 0, sizeof(struct termios));
+	if (tcgetattr(STDIN_FILENO, &terminfo.orig) == -1) {
+		return syscallError("tcgetattr");
+	}
+	terminfo.set = true;
+	mrlog::debug("termios state saved\n");
+	return ExitCode::SUCCESS;
 }
 
 void TerminalSettings::reset() {
 	if (!terminfo.set) {
 		return;
 	}
-
-	mrlog::info("Resetting Terminal Settings");
+	mrlog::info("Resetting Terminal Settings\n");
 	if (tcsetattr(STDIN_FILENO, TCSAFLUSH, &terminfo.orig) == -1) {
 		syscallError("tcsetattr");
 	}

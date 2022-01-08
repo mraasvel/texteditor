@@ -1,13 +1,15 @@
 #include "util/util.hpp"
 #include "util/mrlog.hpp"
+#include "util/exit_codes.hpp"
 #include <cstring>
 #include <string>
 #include <cerrno>
 
 namespace TextEditor {
 
-void syscallError(const std::string& s) {
-	mrlog::error("%s: %s", s.c_str(), strerror(errno));
+int syscallError(const std::string& s) {
+	mrlog::error("{}: {}\n", s, strerror(errno));
+	return ExitCode::ERROR;
 }
 
 }
