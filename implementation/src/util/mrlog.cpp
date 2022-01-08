@@ -4,7 +4,9 @@ namespace mrlog {
 
 	namespace Detail {
 
-	std::string logfile = "logfile.log";
+	constexpr char DEFAULT_LOGFILE[] = "mrlog.log";
+
+	std::string logfile {DEFAULT_LOGFILE};
 
 	const char* parseFormat(const char* format) {
 		while (*format != '}') {
@@ -24,6 +26,10 @@ namespace mrlog {
 
 	void setLogFile(std::string&& file) {
 		Detail::logfile = std::forward<std::string>(file);
+	}
+
+	void resetLogFile() {
+		Detail::logfile = Detail::DEFAULT_LOGFILE;
 	}
 
 }

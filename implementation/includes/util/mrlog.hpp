@@ -86,6 +86,7 @@ void cerr(const char* format, Args&&...args) {
 
 void clearLog();
 void setLogFile(std::string&& file);
+void resetLogFile();
 
 template <typename... Args>
 void log(const char* format, Args&&...args) {

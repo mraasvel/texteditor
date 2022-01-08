@@ -8,7 +8,6 @@
 namespace TextEditor {
 
 static int run() {
-	mrlog::setLogFile("mrlog.log");
 	mrlog::clearLog();
 	if (!isatty(STDIN_FILENO)) {
 		return syscallError("isatty");

@@ -1,6 +1,7 @@
 #include "coordinator.hpp"
 #include "text_editor.hpp"
 #include "util/mrlog.hpp"
+#include "util/util.hpp"
 #include <ctype.h>
 #include <ncurses.h>
 #include <unordered_map>
@@ -18,7 +19,7 @@ int Coordinator::run() {
 	}
 	while (state == State::ACTIVE) {
 		int ch = termapi.getchar();
-		// mrlog::info("{} - {}\n", key_name(ch), ch);
+		logKey(ch);
 		if (shouldPrint(ch)) {
 			updatechar(ch);
 		} else if (dispatch(ch) == ExitCode::ERROR) {

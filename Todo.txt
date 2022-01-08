@@ -2,7 +2,6 @@
 
 	- Movement:
 
-		- Tried to go up when I couldn't
 		- Window Changing? (bring cursor back into view)
 		- Home + End to jump to start and end of line
 
@@ -28,6 +27,8 @@
 			- Changing scenes (windows)
 			- Moving Cursor, cursor interaction
 			- Mouse interaction (?)
+
+	- Possible bugs:
 
 	- Features:
 
