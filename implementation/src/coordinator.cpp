@@ -11,6 +11,9 @@ namespace TextEditor {
 Coordinator::Coordinator()
 : state(State::ACTIVE), winch(false) {}
 
+Coordinator::Coordinator(std::ifstream& ifs)
+: state(State::ACTIVE), lines(ifs), winch(false) {}
+
 static bool shouldPrint(int ch);
 
 int Coordinator::run() {
@@ -18,6 +21,7 @@ int Coordinator::run() {
 		return ExitCode::ERROR;
 	}
 	while (state == State::ACTIVE) {
+		termapi.render(lines);
 		int ch = termapi.getchar();
 		logKey(ch);
 		if (windowChanged(ch)) {
@@ -30,7 +34,6 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
-		termapi.render(lines);
 	}
 	return ExitCode::SUCCESS;
 }
@@ -191,11 +194,13 @@ int Coordinator::dispatchHome() {
 	auto chars = lines.moveStart();
 	auto nlines = termapi.calculateUnderflowedLines(chars);
 	auto linesize = termapi.getLineSize();
+	mrlog::info("nlines: {}\n", nlines);
 	while (nlines-- > 0) {
 		lines.cornerUp(linesize);
 	}
 	return ExitCode::SUCCESS;
 }
+
 int Coordinator::dispatchEnd() {
 	auto chars = lines.moveEnd();
 	auto nlines = termapi.calculateOverflowedLines(chars);

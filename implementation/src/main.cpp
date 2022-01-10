@@ -7,12 +7,17 @@
 
 namespace TextEditor {
 
-static int run() {
+static int run(int argc, char *argv[]) {
 	mrlog::clearLog();
 	if (!isatty(STDIN_FILENO)) {
 		return syscallError("isatty");
 	}
-	Coordinator coordinator;
+	std::ifstream ifs(argv[0]);
+	if (!ifs.is_open()) {
+		return syscallError("ifs::open");
+	}
+	Coordinator coordinator(ifs);
+	ifs.close();
 	try {
 		return coordinator.run();
 	} catch (const std::exception& e) {
@@ -25,7 +30,12 @@ static int run() {
 }
 
 #ifndef CATCH_CONFIG_MAIN
-int main() {
-	return TextEditor::run();
+int main(int argc, char *argv[]) {
+	argc--; argv++;
+	if (argc == 0) {
+		mrlog::error("no input file given as argument\n");
+		return 1;
+	}
+	return TextEditor::run(argc, argv);
 }
 #endif /* CATCH_CONFIG_MAIN */

@@ -17,6 +17,7 @@ private:
 
 public:
 	Coordinator();
+	Coordinator(std::ifstream& ifs);
 	int run();
 
 	void log() const;

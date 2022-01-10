@@ -1,5 +1,6 @@
 #include "datastructures/splitbuffer.hpp"
 #include "util/mrlog.hpp" // REMOVE
+#include <algorithm>
 #include <stdexcept>
 
 namespace DataStructures {
@@ -89,6 +90,14 @@ const std::string& SplitBuffer::getPost() const {
 	return post;
 }
 
+std::string& SplitBuffer::mutablePre() {
+	return pre;
+}
+
+std::string& SplitBuffer::mutablePost() {
+	return post;
+}
+
 bool SplitBuffer::preEmpty() const {
 	return pre.empty();
 }
@@ -108,7 +117,9 @@ char SplitBuffer::operator[](std::size_t n) const {
 Debug
 */
 void SplitBuffer::log() const {
-	mrlog::log("PRE({}) - POST({})", pre, post);
+	std::string temp(post);
+	std::reverse(temp.begin(), temp.end());
+	mrlog::log("PRE({}) - POST({})", pre, temp);
 }
 
 }

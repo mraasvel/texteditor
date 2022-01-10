@@ -2,6 +2,7 @@
 
 #include "line.hpp"
 #include <list>
+#include <fstream>
 
 namespace TextEditor {
 
@@ -35,6 +36,7 @@ private:
 	};
 public:
 	Lines();
+	Lines(std::ifstream& ifs);
 	void insertNewline();
 	bool moveleft();
 	bool moveright();

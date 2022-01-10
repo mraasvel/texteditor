@@ -1,5 +1,6 @@
 #include "datastructures/lines.hpp"
 #include "util/mrlog.hpp"
+#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
@@ -27,6 +28,16 @@ Lines::Lines()
 : lines(1), current(lines.begin()), topleft(lines) {
 	if (lines.begin() != current) {
 		throw std::runtime_error("Lines: constructor failed because of member variable order");
+	}
+}
+
+Lines::Lines(std::ifstream& ifs)
+: Lines() {
+	while (std::getline(ifs, lines.back().mutablePost())) {
+		std::reverse(lines.back().mutablePost().begin(), lines.back().mutablePost().end());
+		if (!ifs.eof()) {
+			lines.emplace_back(std::string());
+		}
 	}
 }
 
