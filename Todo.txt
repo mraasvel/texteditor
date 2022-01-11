@@ -1,9 +1,6 @@
 >> Todo <<
 
-	- Open and load in files
-	- run.sh: smallest screen on first line: move down from second char, move right from second line
 	- Save file
-
 	- PR
 
 	- Ctrl + Arrow keys? (jumping words: words are defined by characters seperated by certain delimiters)

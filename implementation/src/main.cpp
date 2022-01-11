@@ -7,17 +7,7 @@
 
 namespace TextEditor {
 
-static int run(int argc, char *argv[]) {
-	mrlog::clearLog();
-	if (!isatty(STDIN_FILENO)) {
-		return syscallError("isatty");
-	}
-	std::ifstream ifs(argv[0]);
-	if (!ifs.is_open()) {
-		return syscallError("ifs::open");
-	}
-	Coordinator coordinator(ifs);
-	ifs.close();
+static int run(Coordinator& coordinator) {
 	try {
 		return coordinator.run();
 	} catch (const std::exception& e) {
@@ -27,15 +17,33 @@ static int run(int argc, char *argv[]) {
 	}
 }
 
+static int inputFile(const std::string& filename) {
+	Lines lines;
+	if (lines.fromFile(filename) != ExitCode::SUCCESS) {
+		mrlog::fatal("Could not parse file: {}\n", filename);
+		return ExitCode::ERROR;
+	}
+	Coordinator coordinator(std::move(lines));
+	return run(coordinator);
+}
+
+int main(int argc, char *argv[]) {
+	argc--; argv++;
+	mrlog::clearLog();
+	if (!isatty(STDIN_FILENO)) {
+		return syscallError("isatty");
+	}
+	if (argc > 0) {
+		return TextEditor::inputFile(argv[0]);
+	}
+	Coordinator coordinator;
+	return TextEditor::run(coordinator);
+}
+
 }
 
 #ifndef CATCH_CONFIG_MAIN
 int main(int argc, char *argv[]) {
-	argc--; argv++;
-	if (argc == 0) {
-		mrlog::error("no input file given as argument\n");
-		return 1;
-	}
-	return TextEditor::run(argc, argv);
+	return TextEditor::main(argc, argv);
 }
 #endif /* CATCH_CONFIG_MAIN */

@@ -14,6 +14,7 @@ class TermApi {
 public:
 	enum Keys {
 		K_NEWLINE		= 13,
+		K_TAB			= '\t',
 		K_BACKSPACE		= KEY_BACKSPACE,
 		K_DELETEC		= KEY_DC,
 		K_ARROW_DOWN	= KEY_DOWN,

@@ -23,6 +23,7 @@ void SplitBuffer::insert(char c) {
 	post.push_back(c);
 }
 
+// TODO: should be in reverse order
 void SplitBuffer::insert(const std::string& s) {
 	post.append(s);
 }

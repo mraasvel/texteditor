@@ -17,7 +17,7 @@ private:
 
 public:
 	Coordinator();
-	Coordinator(std::ifstream& ifs);
+	Coordinator(Lines&& lines);
 	int run();
 
 	void log() const;
@@ -33,6 +33,7 @@ private:
 	typedef int (Coordinator::*DispatchFunction)();
 
 	int dispatchNewline();
+	int dispatchTab();
 	int dispatchBackspace();
 	int dispatchDelete();
 	int dispatchArrowDown();

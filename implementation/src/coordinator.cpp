@@ -11,8 +11,8 @@ namespace TextEditor {
 Coordinator::Coordinator()
 : state(State::ACTIVE), winch(false) {}
 
-Coordinator::Coordinator(std::ifstream& ifs)
-: state(State::ACTIVE), lines(ifs), winch(false) {}
+Coordinator::Coordinator(Lines&& lines)
+: state(State::ACTIVE), lines(std::move(lines)), winch(false) {}
 
 static bool shouldPrint(int ch);
 
@@ -47,7 +47,7 @@ int Coordinator::init() {
 }
 
 static bool shouldPrint(int ch) {
-	return isprint(ch) || ch == '\t';
+	return isprint(ch);
 }
 
 bool Coordinator::windowChanged(int ch) const {
@@ -72,6 +72,7 @@ This function is part of the coordinator, it can update the state (so we know wh
 int Coordinator::dispatch(int ch) {
 	static const std::unordered_map<int, DispatchFunction > functions = {
 		{Keys::K_NEWLINE, &Coordinator::dispatchNewline},
+		{Keys::K_TAB, &Coordinator::dispatchTab},
 		{Keys::K_BACKSPACE, &Coordinator::dispatchBackspace},
 		{Keys::K_DELETEC, &Coordinator::dispatchDelete},
 		{Keys::K_ARROW_DOWN, &Coordinator::dispatchArrowDown},
@@ -101,6 +102,13 @@ int Coordinator::dispatchNewline() {
 	lines.insertNewline();
 	if (termapi.isEndOfLines()) {
 		lines.cornerDown(termapi.getLineSize());
+	}
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchTab() {
+	for (int i = 0; i < 4; ++i) {
+		updatechar(' ');
 	}
 	return ExitCode::SUCCESS;
 }
@@ -141,9 +149,16 @@ int Coordinator::dispatchArrowLeft() {
 }
 
 int Coordinator::dispatchArrowRight() {
-	if (lines.moveright() && termapi.isEndOfScreen()) {
-		lines.cornerDown(termapi.getLineSize());
+	if (!lines.moveright()) {
+		if (!lines.moveNextLine()) {
+			return ExitCode::SUCCESS;
+		} else if (!termapi.isEndOfLines()) {
+			return ExitCode::SUCCESS;
+		}
+	} else if (!termapi.isEndOfScreen()) {
+		return ExitCode::SUCCESS;
 	}
+	lines.cornerDown(termapi.getLineSize());
 	return ExitCode::SUCCESS;
 }
 
