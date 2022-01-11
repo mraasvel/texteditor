@@ -11,6 +11,9 @@ namespace TextEditor {
 Coordinator::Coordinator()
 : state(State::ACTIVE), winch(false) {}
 
+Coordinator::Coordinator(Lines&& lines)
+: state(State::ACTIVE), lines(std::move(lines)), winch(false) {}
+
 static bool shouldPrint(int ch);
 
 int Coordinator::run() {
@@ -18,6 +21,7 @@ int Coordinator::run() {
 		return ExitCode::ERROR;
 	}
 	while (state == State::ACTIVE) {
+		termapi.render(lines);
 		int ch = termapi.getchar();
 		logKey(ch);
 		if (windowChanged(ch)) {
@@ -30,7 +34,6 @@ int Coordinator::run() {
 		} else if (dispatch(ch) == ExitCode::ERROR) {
 			return ExitCode::ERROR;
 		}
-		termapi.render(lines);
 	}
 	return ExitCode::SUCCESS;
 }
@@ -44,7 +47,7 @@ int Coordinator::init() {
 }
 
 static bool shouldPrint(int ch) {
-	return isprint(ch) || ch == '\t';
+	return isprint(ch);
 }
 
 bool Coordinator::windowChanged(int ch) const {
@@ -69,6 +72,7 @@ This function is part of the coordinator, it can update the state (so we know wh
 int Coordinator::dispatch(int ch) {
 	static const std::unordered_map<int, DispatchFunction > functions = {
 		{Keys::K_NEWLINE, &Coordinator::dispatchNewline},
+		{Keys::K_TAB, &Coordinator::dispatchTab},
 		{Keys::K_BACKSPACE, &Coordinator::dispatchBackspace},
 		{Keys::K_DELETEC, &Coordinator::dispatchDelete},
 		{Keys::K_ARROW_DOWN, &Coordinator::dispatchArrowDown},
@@ -82,6 +86,7 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_ESCAPE, &Coordinator::dispatchEscape},
 		{Keys::K_CTRL_P, &Coordinator::dispatchCtrlP},
 		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
+		{Keys::K_CTRL_S, &Coordinator::dispatchCtrlS},
 		{Keys::K_CTRL_V, &Coordinator::dispatchCtrlV},
 		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
 		{Keys::K_HOME, &Coordinator::dispatchHome},
@@ -98,6 +103,13 @@ int Coordinator::dispatchNewline() {
 	lines.insertNewline();
 	if (termapi.isEndOfLines()) {
 		lines.cornerDown(termapi.getLineSize());
+	}
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchTab() {
+	for (int i = 0; i < 4; ++i) {
+		updatechar(' ');
 	}
 	return ExitCode::SUCCESS;
 }
@@ -138,9 +150,16 @@ int Coordinator::dispatchArrowLeft() {
 }
 
 int Coordinator::dispatchArrowRight() {
-	if (lines.moveright() && termapi.isEndOfScreen()) {
-		lines.cornerDown(termapi.getLineSize());
+	if (!lines.moveright()) {
+		if (!lines.moveNextLine()) {
+			return ExitCode::SUCCESS;
+		} else if (!termapi.isEndOfLines()) {
+			return ExitCode::SUCCESS;
+		}
+	} else if (!termapi.isEndOfScreen()) {
+		return ExitCode::SUCCESS;
 	}
+	lines.cornerDown(termapi.getLineSize());
 	return ExitCode::SUCCESS;
 }
 
@@ -178,6 +197,17 @@ int Coordinator::dispatchCtrlQ() {
 	return ExitCode::SUCCESS;
 }
 
+int Coordinator::dispatchCtrlS() {
+	mrlog::info("Saving to file: {}\n", lines.getFilename());
+	if (lines.getFilename().empty()) {
+		// TODO: prompt for filename, check if exists for overwriting etc
+		mrlog::info("empty filename\n");
+	} else {
+		lines.saveToFile();
+	}
+	return ExitCode::SUCCESS;
+}
+
 int Coordinator::dispatchCtrlV() {
 	return ExitCode::SUCCESS;
 }
@@ -191,11 +221,13 @@ int Coordinator::dispatchHome() {
 	auto chars = lines.moveStart();
 	auto nlines = termapi.calculateUnderflowedLines(chars);
 	auto linesize = termapi.getLineSize();
+	mrlog::info("nlines: {}\n", nlines);
 	while (nlines-- > 0) {
 		lines.cornerUp(linesize);
 	}
 	return ExitCode::SUCCESS;
 }
+
 int Coordinator::dispatchEnd() {
 	auto chars = lines.moveEnd();
 	auto nlines = termapi.calculateOverflowedLines(chars);

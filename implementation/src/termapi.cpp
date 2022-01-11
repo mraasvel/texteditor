@@ -178,7 +178,11 @@ void TermApi::movedown(int n) const {
 std::size_t TermApi::calculateUnderflowedLines(std::size_t chars) const {
 	Point pos {getPosition()};
 	std::size_t rows_left = pos.y;
-	std::size_t rows_moved = (getLineSize() - pos.x + chars) / getLineSize() - 1;
+	// TODO: evaluate (getlinesize() - 1) off by one error potential
+	std::size_t rows_moved = (getLineSize() - pos.x + chars) / getLineSize();
+	if (rows_moved > 0) {
+		rows_moved -= 1;
+	}
 	if (rows_left < rows_moved) {
 		return rows_moved - rows_left;
 	}

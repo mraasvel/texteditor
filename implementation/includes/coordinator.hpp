@@ -17,6 +17,7 @@ private:
 
 public:
 	Coordinator();
+	Coordinator(Lines&& lines);
 	int run();
 
 	void log() const;
@@ -32,6 +33,7 @@ private:
 	typedef int (Coordinator::*DispatchFunction)();
 
 	int dispatchNewline();
+	int dispatchTab();
 	int dispatchBackspace();
 	int dispatchDelete();
 	int dispatchArrowDown();
@@ -45,6 +47,7 @@ private:
 	int dispatchEscape();
 	int dispatchCtrlP();
 	int dispatchCtrlQ();
+	int dispatchCtrlS();
 	int dispatchCtrlV();
 	int dispatchWindowChange();
 	int dispatchHome();
@@ -53,7 +56,6 @@ private:
 private:
 	State state;
 	TermApi termapi;
-	Line line;
 	Lines lines;
 	bool winch;
 };

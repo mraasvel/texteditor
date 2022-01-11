@@ -1,5 +1,6 @@
 #include "datastructures/splitbuffer.hpp"
 #include "util/mrlog.hpp" // REMOVE
+#include <algorithm>
 #include <stdexcept>
 
 namespace DataStructures {
@@ -22,6 +23,7 @@ void SplitBuffer::insert(char c) {
 	post.push_back(c);
 }
 
+// TODO: should be in reverse order
 void SplitBuffer::insert(const std::string& s) {
 	post.append(s);
 }
@@ -89,6 +91,14 @@ const std::string& SplitBuffer::getPost() const {
 	return post;
 }
 
+std::string& SplitBuffer::mutablePre() {
+	return pre;
+}
+
+std::string& SplitBuffer::mutablePost() {
+	return post;
+}
+
 bool SplitBuffer::preEmpty() const {
 	return pre.empty();
 }
@@ -104,11 +114,19 @@ char SplitBuffer::operator[](std::size_t n) const {
 	return n < pre.size() ? pre[n] : post[post.size() - (n - pre.size()) - 1];
 }
 
+void SplitBuffer::writeToStream(std::ostream& os) const {
+	std::string temp {post};
+	std::reverse(temp.begin(), temp.end());
+	os << pre << temp;
+}
+
 /*
 Debug
 */
 void SplitBuffer::log() const {
-	mrlog::log("PRE({}) - POST({})", pre, post);
+	std::string temp(post);
+	std::reverse(temp.begin(), temp.end());
+	mrlog::log("PRE({}) - POST({})", pre, temp);
 }
 
 }

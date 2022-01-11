@@ -1,5 +1,8 @@
 #include "datastructures/lines.hpp"
 #include "util/mrlog.hpp"
+#include "text_editor.hpp"
+#include "util/util.hpp"
+#include <algorithm>
 #include <stdexcept>
 #include <cassert>
 
@@ -30,8 +33,42 @@ Lines::Lines()
 	}
 }
 
+Lines::Lines(Lines&& other)
+: lines(other.lines), current(lines.begin()), topleft(lines), filename(std::move(other.filename)) {}
+
+void Lines::insertPostString(const std::string& post) {
+	for (auto rit = post.rbegin(); rit != post.rend(); ++rit) {
+		if (*rit == '\t') {
+			insert("    ");
+		} else {
+			insert(*rit);
+		}
+	}
+}
+
+int Lines::fromFile(const std::string& filename) {
+	this->filename = filename;
+	std::ifstream ifs(filename);
+	if (!ifs.is_open()) {
+		return ExitCode::SUCCESS;
+	}
+	std::string post;
+	while (std::getline(ifs, post)) {
+		insertPostString(post);
+		pushNewline();
+	}
+	ifs.close();
+	current = lines.begin();
+	return ExitCode::SUCCESS;
+}
+
 void Lines::insertNewline() {
-	lines.insert(std::next(current), Line(current->movePost()));
+	lines.emplace(std::next(current), Line(current->movePost()));
+	++current;
+}
+
+void Lines::pushNewline() {
+	lines.emplace(std::next(current));
 	++current;
 }
 
@@ -50,14 +87,18 @@ bool Lines::moveleft() {
 
 bool Lines::moveright() {
 	if (current->postEmpty()) {
-		if (std::next(current) == lines.end()) {
-			return false;
-		}
-		++current;
-		current->moveStart();
-	} else {
-		current->moveright();
+		return false;
 	}
+	current->moveright();
+	return true;
+}
+
+bool Lines::moveNextLine() {
+	if (std::next(current) == lines.end()) {
+		return false;
+	}
+	++current;
+	current->moveStart();
 	return true;
 }
 
@@ -70,8 +111,8 @@ std::size_t Lines::moveEnd() {
 }
 
 bool Lines::moveDown(std::size_t linesize) {
-	std::size_t after = current->getPost().size();
 	std::size_t index = current->getPre().size();
+	std::size_t after = index % linesize + current->getPost().size();
 	if (after >= linesize) {
 		current->moveright(linesize);
 	} else if (std::next(current) != lines.end()) {
@@ -134,6 +175,10 @@ void Lines::eraseLine(LineIterator pos) {
 
 void Lines::insert(int c) {
 	current->insert(c);
+}
+
+void Lines::insert(const std::string& s) {
+	current->insert(s);
 }
 
 bool Lines::del() {
@@ -224,6 +269,24 @@ char Lines::nextChar(PositionType& position) {
 		return '\n';
 	}
 	return position.line->operator[](position.index++);
+}
+
+const std::string& Lines::getFilename() const {
+	return filename;
+}
+
+int Lines::saveToFile() const {
+	std::ofstream ofs {getFilename(), std::ios_base::out | std::ios_base::trunc};
+	if (!ofs.is_open()) {
+		mrlog::error("cannot open file for saving: {}\n", getFilename());
+		return ExitCode::ERROR;
+	}
+	for (const Line& line : lines) {
+		line.writeToStream(ofs);
+		ofs << '\n';
+	}
+	ofs.close();
+	return ExitCode::SUCCESS;
 }
 
 void Lines::log() const {

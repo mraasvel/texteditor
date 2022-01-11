@@ -23,10 +23,13 @@ public:
 	std::size_t size() const;
 	const std::string& getPre() const;
 	const std::string& getPost() const;
+	std::string& mutablePre();
+	std::string& mutablePost();
 	bool preEmpty() const;
 	bool postEmpty() const;
 
 	char operator[](std::size_t n) const;
+	void writeToStream(std::ostream& out) const;
 
 /* DEBUG, REMOVE */
 	void log() const;

@@ -2,6 +2,7 @@
 
 #include "line.hpp"
 #include <list>
+#include <fstream>
 
 namespace TextEditor {
 
@@ -35,9 +36,14 @@ private:
 	};
 public:
 	Lines();
+	Lines(Lines&& other);
+	int fromFile(const std::string& filename);
+	void insertPostString(const std::string& post);
 	void insertNewline();
+	void pushNewline();
 	bool moveleft();
 	bool moveright();
+	bool moveNextLine();
 	std::size_t moveStart();
 	std::size_t moveEnd();
 	bool moveDown(std::size_t linesize);
@@ -46,10 +52,10 @@ public:
 	void push(const std::string& s);
 	bool erase();
 	void insert(int c);
+	void insert(const std::string& s);
 	bool del();
 	bool postEmpty() const;
 	bool preEmpty() const;
-
 
 	void cornerDown(std::size_t linesize);
 	void cornerUp(std::size_t linesize);
@@ -58,6 +64,9 @@ public:
 	bool isCursor(const PositionType& pos) const;
 
 	void recalibrateWindow(std::size_t linesize, std::size_t rows);
+
+	const std::string& getFilename() const;
+	int saveToFile() const;
 
 /* Logging */
 	void logcurrent() const;
@@ -73,6 +82,7 @@ private:
 	LinesType lines;
 	LineIterator current;
 	PositionType topleft; // the character in the topleft corner
+	std::string filename;
 };
 
 }
