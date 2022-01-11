@@ -114,6 +114,12 @@ char SplitBuffer::operator[](std::size_t n) const {
 	return n < pre.size() ? pre[n] : post[post.size() - (n - pre.size()) - 1];
 }
 
+void SplitBuffer::writeToStream(std::ostream& os) const {
+	std::string temp {post};
+	std::reverse(temp.begin(), temp.end());
+	os << pre << temp;
+}
+
 /*
 Debug
 */

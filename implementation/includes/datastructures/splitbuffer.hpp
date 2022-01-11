@@ -29,6 +29,7 @@ public:
 	bool postEmpty() const;
 
 	char operator[](std::size_t n) const;
+	void writeToStream(std::ostream& out) const;
 
 /* DEBUG, REMOVE */
 	void log() const;

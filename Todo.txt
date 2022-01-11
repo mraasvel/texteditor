@@ -1,6 +1,5 @@
 >> Todo <<
 
-	- Save file
 	- PR
 
 	- Ctrl + Arrow keys? (jumping words: words are defined by characters seperated by certain delimiters)

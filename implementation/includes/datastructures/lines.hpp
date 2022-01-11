@@ -65,6 +65,9 @@ public:
 
 	void recalibrateWindow(std::size_t linesize, std::size_t rows);
 
+	const std::string& getFilename() const;
+	int saveToFile() const;
+
 /* Logging */
 	void logcurrent() const;
 	void log() const;
@@ -79,6 +82,7 @@ private:
 	LinesType lines;
 	LineIterator current;
 	PositionType topleft; // the character in the topleft corner
+	std::string filename;
 };
 
 }

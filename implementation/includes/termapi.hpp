@@ -29,6 +29,7 @@ public:
 		K_CTRL_C		= K_CTRL_CHAR('c'),
 		K_CTRL_P		= K_CTRL_CHAR('p'),
 		K_CTRL_Q		= K_CTRL_CHAR('q'),
+		K_CTRL_S		= K_CTRL_CHAR('s'),
 		K_CTRL_V		= K_CTRL_CHAR('v'),
 		K_WINCH			= KEY_RESIZE,
 		K_HOME			= KEY_HOME,

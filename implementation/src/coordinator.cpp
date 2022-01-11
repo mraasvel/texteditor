@@ -86,6 +86,7 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_ESCAPE, &Coordinator::dispatchEscape},
 		{Keys::K_CTRL_P, &Coordinator::dispatchCtrlP},
 		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
+		{Keys::K_CTRL_S, &Coordinator::dispatchCtrlS},
 		{Keys::K_CTRL_V, &Coordinator::dispatchCtrlV},
 		{Keys::K_WINCH, &Coordinator::dispatchWindowChange},
 		{Keys::K_HOME, &Coordinator::dispatchHome},
@@ -193,6 +194,17 @@ int Coordinator::dispatchCtrlP() {
 
 int Coordinator::dispatchCtrlQ() {
 	state = State::EXIT;
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchCtrlS() {
+	mrlog::info("Saving to file: {}\n", lines.getFilename());
+	if (lines.getFilename().empty()) {
+		// TODO: prompt for filename, check if exists for overwriting etc
+		mrlog::info("empty filename\n");
+	} else {
+		lines.saveToFile();
+	}
 	return ExitCode::SUCCESS;
 }
 

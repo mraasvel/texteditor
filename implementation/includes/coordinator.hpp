@@ -47,6 +47,7 @@ private:
 	int dispatchEscape();
 	int dispatchCtrlP();
 	int dispatchCtrlQ();
+	int dispatchCtrlS();
 	int dispatchCtrlV();
 	int dispatchWindowChange();
 	int dispatchHome();
@@ -55,7 +56,6 @@ private:
 private:
 	State state;
 	TermApi termapi;
-	Line line;
 	Lines lines;
 	bool winch;
 };

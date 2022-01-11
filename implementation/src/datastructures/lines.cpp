@@ -34,7 +34,7 @@ Lines::Lines()
 }
 
 Lines::Lines(Lines&& other)
-: lines(other.lines), current(lines.begin()), topleft(lines) {}
+: lines(other.lines), current(lines.begin()), topleft(lines), filename(std::move(other.filename)) {}
 
 void Lines::insertPostString(const std::string& post) {
 	for (auto rit = post.rbegin(); rit != post.rend(); ++rit) {
@@ -47,9 +47,10 @@ void Lines::insertPostString(const std::string& post) {
 }
 
 int Lines::fromFile(const std::string& filename) {
+	this->filename = filename;
 	std::ifstream ifs(filename);
 	if (!ifs.is_open()) {
-		return syscallError("ifstream::open: " + filename);;
+		return ExitCode::SUCCESS;
 	}
 	std::string post;
 	while (std::getline(ifs, post)) {
@@ -268,6 +269,24 @@ char Lines::nextChar(PositionType& position) {
 		return '\n';
 	}
 	return position.line->operator[](position.index++);
+}
+
+const std::string& Lines::getFilename() const {
+	return filename;
+}
+
+int Lines::saveToFile() const {
+	std::ofstream ofs {getFilename(), std::ios_base::out | std::ios_base::trunc};
+	if (!ofs.is_open()) {
+		mrlog::error("cannot open file for saving: {}\n", getFilename());
+		return ExitCode::ERROR;
+	}
+	for (const Line& line : lines) {
+		line.writeToStream(ofs);
+		ofs << '\n';
+	}
+	ofs.close();
+	return ExitCode::SUCCESS;
 }
 
 void Lines::log() const {
