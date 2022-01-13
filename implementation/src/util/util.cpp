@@ -12,4 +12,12 @@ int syscallError(const std::string& s) {
 	return ExitCode::ERROR;
 }
 
+bool isNormal(int ch) {
+	return isprint(ch) && !isDelimiter(ch);
+}
+
+bool isDelimiter(int ch) {
+	return isspace(ch);
+}
+
 }

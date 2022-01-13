@@ -1,29 +1,15 @@
 >> Todo <<
 
-	- PR
-
-	- Ctrl + Arrow keys? (jumping words: words are defined by characters seperated by certain delimiters)
 	- Selections:
 		- With shift + arrow keys
 		- Erasing
 
-	- Ncurses Uses:
-
-		Used for:
-
-			- Reading input
-			- Writing output
-			- Determining special characters: [NEWLINE, KEYS, F1s, ESC, SEQUENCES]
-			- Changing scenes (windows)
-			- Moving Cursor, cursor interaction
-			- Mouse interaction (?)
-
-	- Possible bugs:
+	- Interface for saving files
+	- Directory browser
+	- Syntax Highlighting
 
 	- Features:
 
-		- Scrolling (with arrow keys initially)
-		- Window resizing
 		- Opening, saving files
 		- Shortcuts: look at VSCode for inspiration
 		- Syntax Highlighting

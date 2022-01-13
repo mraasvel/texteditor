@@ -31,6 +31,8 @@ private:
 
 /* Dispatchers */
 	typedef int (Coordinator::*DispatchFunction)();
+	typedef bool (*IsFunction)(int);
+	typedef int (Lines::*CurrentCharFunction)() const;
 
 	int dispatchNewline();
 	int dispatchTab();
@@ -44,6 +46,10 @@ private:
 	int dispatchShiftArrowUp();
 	int dispatchShiftArrowLeft();
 	int dispatchShiftArrowRight();
+	int dispatchCtrlArrowDown();
+	int dispatchCtrlArrowUp();
+	int dispatchCtrlArrowLeft();
+	int dispatchCtrlArrowRight();
 	int dispatchEscape();
 	int dispatchCtrlP();
 	int dispatchCtrlQ();
@@ -52,6 +58,8 @@ private:
 	int dispatchWindowChange();
 	int dispatchHome();
 	int dispatchEnd();
+
+	void skipchars(CurrentCharFunction currentchar, IsFunction istype, DispatchFunction);
 
 private:
 	State state;

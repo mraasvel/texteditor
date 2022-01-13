@@ -11,6 +11,20 @@ SplitBuffer::SplitBuffer(std::string&& post) {
 	std::swap(this->post, post);
 }
 
+int SplitBuffer::currentChar() const {
+	if (pre.empty()) {
+		return 0;
+	}
+	return pre.back();
+}
+
+int SplitBuffer::nextChar() const {
+	if (post.empty()) {
+		return 0;
+	}
+	return post.back();
+}
+
 void SplitBuffer::push(char c) {
 	pre.push_back(c);
 }

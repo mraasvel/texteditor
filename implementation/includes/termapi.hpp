@@ -13,7 +13,7 @@ namespace TextEditor {
 class TermApi {
 public:
 	enum Keys {
-		K_NEWLINE		= 13,
+		K_NEWLINE		= '\r',
 		K_TAB			= '\t',
 		K_BACKSPACE		= KEY_BACKSPACE,
 		K_DELETEC		= KEY_DC,
@@ -25,6 +25,10 @@ public:
 		K_SARROW_UP		= KEY_SR,
 		K_SARROW_LEFT	= KEY_SLEFT,
 		K_SARROW_RIGHT	= KEY_SRIGHT,
+		K_CARROW_DOWN	= 566,
+		K_CARROW_UP		= 525,
+		K_CARROW_LEFT	= 545,
+		K_CARROW_RIGHT	= 560,
 		K_ESCAPE		= 27,
 		K_CTRL_C		= K_CTRL_CHAR('c'),
 		K_CTRL_P		= K_CTRL_CHAR('p'),

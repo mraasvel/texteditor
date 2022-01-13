@@ -62,6 +62,14 @@ int Lines::fromFile(const std::string& filename) {
 	return ExitCode::SUCCESS;
 }
 
+int Lines::currentChar() const {
+	return current->currentChar();
+}
+
+int Lines::postChar() const {
+	return current->nextChar();
+}
+
 void Lines::insertNewline() {
 	lines.emplace(std::next(current), Line(current->movePost()));
 	++current;

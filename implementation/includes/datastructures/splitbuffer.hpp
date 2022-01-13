@@ -8,6 +8,8 @@ class SplitBuffer {
 public:
 	SplitBuffer();
 	SplitBuffer(std::string&& post);
+	int currentChar() const;
+	int nextChar() const;
 	void push(char c);
 	void push(const std::string& s);
 	void insert(char c);

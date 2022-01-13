@@ -38,6 +38,8 @@ public:
 	Lines();
 	Lines(Lines&& other);
 	int fromFile(const std::string& filename);
+	int currentChar() const;
+	int postChar() const;
 	void insertPostString(const std::string& post);
 	void insertNewline();
 	void pushNewline();

@@ -83,6 +83,10 @@ int Coordinator::dispatch(int ch) {
 		{Keys::K_SARROW_UP, &Coordinator::dispatchShiftArrowUp},
 		{Keys::K_SARROW_LEFT, &Coordinator::dispatchShiftArrowLeft},
 		{Keys::K_SARROW_RIGHT, &Coordinator::dispatchShiftArrowRight},
+		{Keys::K_CARROW_DOWN, &Coordinator::dispatchCtrlArrowDown},
+		{Keys::K_CARROW_UP, &Coordinator::dispatchCtrlArrowUp},
+		{Keys::K_CARROW_LEFT, &Coordinator::dispatchCtrlArrowLeft},
+		{Keys::K_CARROW_RIGHT, &Coordinator::dispatchCtrlArrowRight},
 		{Keys::K_ESCAPE, &Coordinator::dispatchEscape},
 		{Keys::K_CTRL_P, &Coordinator::dispatchCtrlP},
 		{Keys::K_CTRL_Q, &Coordinator::dispatchCtrlQ},
@@ -182,6 +186,50 @@ int Coordinator::dispatchShiftArrowRight() {
 	mrlog::info("Call: {}\n", __FUNCTION__);
 	return ExitCode::SUCCESS;
 }
+
+int Coordinator::dispatchCtrlArrowDown() {
+	mrlog::info("Call: {}\n", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchCtrlArrowUp() {
+	mrlog::info("Call: {}\n", __FUNCTION__);
+	return ExitCode::SUCCESS;
+}
+
+void Coordinator::skipchars(CurrentCharFunction currentchar, IsFunction istype, DispatchFunction dispatch) {
+	while (istype((lines.*currentchar)())) {
+		mrlog::info("Skipping: {}\n", (lines.*currentchar)());
+		(this->*dispatch)();
+	}
+}
+
+int Coordinator::dispatchCtrlArrowLeft() {
+	mrlog::info("Call: {}\n", __FUNCTION__);
+	int ch = lines.currentChar();
+	if (ch == 0) {
+		return dispatchArrowLeft();
+	} else if (isDelimiter(ch)) {
+		skipchars(&Lines::currentChar, &isDelimiter, &Coordinator::dispatchArrowLeft);
+	} else if (isNormal(ch)) {
+		skipchars(&Lines::currentChar, &isNormal, &Coordinator::dispatchArrowLeft);
+	}
+	return ExitCode::SUCCESS;
+}
+
+int Coordinator::dispatchCtrlArrowRight() {
+	mrlog::info("Call: {}\n", __FUNCTION__);
+	int ch = lines.postChar();
+	if (ch == 0) {
+		return dispatchArrowRight();
+	} else if (isDelimiter(ch)) {
+		skipchars(&Lines::postChar, &isDelimiter, &Coordinator::dispatchArrowRight);
+	} else if (isNormal(ch)) {
+		skipchars(&Lines::postChar, &isNormal, &Coordinator::dispatchArrowRight);
+	}
+	return ExitCode::SUCCESS;
+}
+
 
 int Coordinator::dispatchEscape() {
 	return ExitCode::SUCCESS;
