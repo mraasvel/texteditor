@@ -23,7 +23,7 @@ int Coordinator::run() {
 	while (state == State::ACTIVE) {
 		termapi.render(lines);
 		int ch = termapi.getchar();
-		logKey(ch);
+		// logKey(ch);
 		if (windowChanged(ch)) {
 			mrlog::info("detected window change\n");
 			winch = false;
@@ -269,7 +269,6 @@ int Coordinator::dispatchHome() {
 	auto chars = lines.moveStart();
 	auto nlines = termapi.calculateUnderflowedLines(chars);
 	auto linesize = termapi.getLineSize();
-	mrlog::info("nlines: {}\n", nlines);
 	while (nlines-- > 0) {
 		lines.cornerUp(linesize);
 	}

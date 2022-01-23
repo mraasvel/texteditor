@@ -1,9 +1,16 @@
 >> Todo <<
 
+	- Read more about text editors
+	- Think more about the layout and structure of the overall program
+	- Reimplement using a library such as SDL instead of terminal environment
+	- Restructure
+
 	- Selections:
 		- With shift + arrow keys
 		- Erasing
 
+	- Ctrl+Z (UNDO)
+	- Ctrl+C, Ctrl+V
 	- Interface for saving files
 	- Directory browser
 	- Syntax Highlighting

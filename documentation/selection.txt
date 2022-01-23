@@ -1,0 +1,11 @@
+To consider:
+
+	1. How a selection is created
+		- Shift + movement keys
+		- Mouse selection (complex)
+	2. How a selection is represented
+	3. How a selection is deselected:
+		- Movement without shift
+	4. What happens on actions:
+		- Typing (deletes selection and replaces it)
+		- Erasing
